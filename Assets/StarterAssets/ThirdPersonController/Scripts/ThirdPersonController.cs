@@ -210,6 +210,16 @@ namespace StarterAssets
             CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
         }
+        
+        public void CameraLookAt(Transform target)
+        {
+            CinemachineCameraTarget.transform.LookAt(target);
+            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            var pitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
+            if (pitch > 180f) // fixes clamping issue in CameraRotation()
+                pitch -= 360;
+            _cinemachineTargetPitch = pitch;
+        }
 
         private void Move()
         {

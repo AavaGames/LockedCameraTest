@@ -2,81 +2,196 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEditor.PackageManager;
+using UnityEngine.Rendering;
+using StarterAssets;
+using UnityEngine.InputSystem.XR;
+using TMPro;
+using UnityEngine.UIElements;
+using Unity.VisualScripting;
+using System;
+using System.Linq;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    private int _currentCamera = 0;
-    public CinemachineVirtualCamera Camera0;
-    public CinemachineVirtualCamera Camera1;
-    public CinemachineVirtualCamera Camera2;
-    public CinemachineVirtualCamera Camera3;
-    private List<CinemachineVirtualCamera> _cameras = null;
+    public enum SortingType { List, Distance }
 
-    public GameObject Target1;
-    public GameObject Target2;
-    public GameObject Target3;
-    private List<GameObject> _targets = null;
+    private bool _targetting = false;
+    public CinemachineVirtualCamera defaultCamera;
+    public CinemachineVirtualCamera[] targettingCameras;
+    private int currentTargettingCamera = 0;
+
+    private ThirdPersonController controller;
+
+    public GameObject currentTarget;
+    public List<GameObject> possibleTargets = new List<GameObject>();
+    private int _targetIndex = -1;
 
     public UnityEngine.UI.Image Reticle;
+    public TextMeshProUGUI distanceText;
+    private float _targetDistance = 0f;
+    public float TargetDistance => _targetDistance;
+
+    [Header("Variables")]
+    public SortingType sortingType;
+    [Tooltip("How high to position the camera above the player's feet/origin")]
+    public float playerHeightOffset = 1.375f;
+    public float cameraDistance = 3.0f;
 
     void Start()
     {
+        controller = GetComponent<ThirdPersonController>();
         Reticle.enabled = false;
-
-        _cameras = new List<CinemachineVirtualCamera>
-        {
-            Camera0,
-            Camera1,
-            Camera2,
-            Camera3,
-        };
-
-        _targets = new List<GameObject>
-        {
-            Target1,
-            Target2,
-            Target3,
-        };
+        distanceText.enabled = false;
     }
 
     void Update()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            UpdateTargetingCameraPosition(_targets[i], _cameras[i + 1]);
-        }
-
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            _currentCamera++;
-            if (_cameras.Count == _currentCamera)
+            _targetting = !_targetting;
+
+            if (currentTarget == null)
+                FindTarget(true);
+
+            CinemachineVirtualCamera cam;
+            if (_targetting)
             {
-                _currentCamera = 0;
+                cam = targettingCameras[currentTargettingCamera];
+            }
+            else
+            {
+                controller.CameraLookAt(currentTarget.transform);
+                cam = defaultCamera;
+            }
+            Reticle.enabled = _targetting;
+            distanceText.enabled = _targetting;
+            ChangeCamera(cam);
+        }
+
+        if (_targetting)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                FindTarget(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                FindTarget(true);
             }
 
-            Reticle.enabled = _currentCamera > 0;
-
-            _cameras[_currentCamera].Priority = 10;
-
-            _cameras[_currentCamera].MoveToTopOfPrioritySubqueue();
-        }
+            UpdateTargetingCameraPosition();
+            _targetDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
+            distanceText.text = _targetDistance.ToString("#.00");
+        }  
     }
 
-    private void UpdateTargetingCameraPosition(GameObject targetPlayer, CinemachineVirtualCamera camera)
+    private void FindTarget(bool forward)
     {
-        float playerHeightOffset = 1.375f; // How high to position the camera above the player's feet/origin
-        var player = new Vector3(this.transform.position.x, this.transform.position.y + playerHeightOffset, this.transform.position.z);
-        var target = targetPlayer.transform.position;
+        if (possibleTargets.Count < 1)
+        {
+            Debug.LogError("No targets in list");
+            _targetting = false;
+            return;
+        }
+
+        if (sortingType == SortingType.List)
+        {
+            if (_targetIndex == -1 || currentTarget == null)
+            {
+                _targetIndex = 0;
+            }
+            else
+            {
+                int index = _targetIndex;
+                if (forward)
+                    index++;
+                else
+                    index--;
+                _targetIndex = WrapIndex(index, possibleTargets.Count);
+            }
+        }
+        else if (sortingType == SortingType.Distance)
+        {
+            List<float> distances = new List<float>(possibleTargets.Count);
+            Vector3 pos = transform.position; // speeds up loop
+            float currentTargetDistance = 0;
+
+            for (int i = 0; i < possibleTargets.Count; i++)
+            {
+                // Can be further optimized by skipping square root
+                float distance = Vector3.Distance(pos, possibleTargets[i].transform.position);
+                distances.Add(distance);
+
+                if (i == _targetIndex)
+                    currentTargetDistance = distance;
+            }
+
+            List<float> originalDistances = new List<float>(distances);
+            distances.Sort();
+
+            int index;
+            if (_targetIndex == -1 || currentTarget == null)
+            {
+                index = 0;
+            }
+            else
+            {
+                // Find index of current target in sorted distances
+                index = distances.IndexOf(currentTargetDistance); 
+                if (forward)
+                    index++;
+                else
+                    index--;
+                index = WrapIndex(index, distances.Count);
+            }
+            // Find new target in the original index position
+            _targetIndex = originalDistances.IndexOf(distances[index]);
+        }
+
+        currentTarget = possibleTargets[_targetIndex];
+        // smooth quickly changing targets
+        targettingCameras[currentTargettingCamera].transform.position = Camera.main.transform.position;
+        currentTargettingCamera = WrapIndex(currentTargettingCamera + 1, targettingCameras.Length);
+        ChangeCamera(targettingCameras[currentTargettingCamera]);
+    }
+
+    public float targetDistance;
+
+    public int WrapIndex(int index, int arrayLength) 
+    {
+        if (index >= arrayLength)
+        {
+            index -= arrayLength;
+            return WrapIndex(index, arrayLength);
+        }
+        else if (index < 0)
+        {
+            index += arrayLength;
+            return WrapIndex(index, arrayLength);
+        }
+        return index;
+    }
+
+    private void ChangeCamera(CinemachineVirtualCamera cam)
+    {
+        cam.Priority = 10;
+        cam.MoveToTopOfPrioritySubqueue();
+    }
+
+
+    private void UpdateTargetingCameraPosition()
+    {
+        var player = new Vector3(transform.position.x, transform.position.y + playerHeightOffset, transform.position.z);
+        var target = currentTarget.transform.position;
 
         var heading = target - player;
         var distance = heading.magnitude;
-        var direction = heading / distance; // This is now the normalized direction.
+        var direction = heading / distance; // This is now the normalized direction
 
-        int cameraSetback = 3; // How far to set the camera back behind player
-        var position = player - (direction * cameraSetback);
+        var position = player - (direction * cameraDistance);
 
-        //Debug.DrawLine(player, position, Color.cyan);
-
-        camera.transform.position = position;
+        targettingCameras[currentTargettingCamera].LookAt = currentTarget.transform;
+        targettingCameras[currentTargettingCamera].transform.position = position;
     }
 }
