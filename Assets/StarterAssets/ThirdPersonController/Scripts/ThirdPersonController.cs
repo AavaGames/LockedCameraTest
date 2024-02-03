@@ -221,6 +221,13 @@ namespace StarterAssets
             _cinemachineTargetPitch = pitch;
         }
 
+        private Transform lookTarget;
+
+        public void SetCameraLookTarget(Transform target)
+        {
+            lookTarget = target;
+        }
+
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
