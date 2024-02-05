@@ -172,28 +172,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c24a1c8f59ac1a41853198f708edc2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   followCameraPrefab: {fileID: 763043542228073354, guid: 6c30e0f092b0f1148bdc8529282aec05,
     type: 3}
   targetCameraPrefab: {fileID: 5446856778594401102, guid: 3972bcf7cd2d1e640aeab5bd9dcc2347,
     type: 3}
-  followCamera: {fileID: 0}
-  targetingCameras: []
-  currentTarget: {fileID: 0}
-  possibleTargets: []
   Reticle: {fileID: 7130207793462097467}
   distanceText: {fileID: 5034586835424538992}
   sortingLabel: {fileID: 5747033021053095736}
   sortingType: 1
   playerHeightOffset: 1.375
   cameraDistance: 3
-  CinemachineCameraTarget: {fileID: 1508356748671528604}
-  TopClamp: 70
-  BottomClamp: -30
+  followCameraTarget: {fileID: 1508356748671528604}
+  cameraClamp:
+    Minimum: -30
+    Maximum: 70
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  followCamera: {fileID: 0}
+  targetingCameras: []
   targetDistance: 0
 --- !u!1 &454845475019537297
 GameObject:
@@ -2482,7 +2481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b99122c63203bf418e6fe81fd237d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   MoveSpeed: 2
@@ -2528,10 +2527,10 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 0}
   - {fileID: 1428437584}
   - {fileID: 4520246718899596234}
   - {fileID: 3108237761144598446}
+  - {fileID: 5979440775247582825}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -2560,7 +2559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   _componentConfiguration: 0
@@ -2605,7 +2604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cac635f24954048aad3a6ff9110beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   IgnoredParameters: []

@@ -1215,25 +1215,22 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   followCameraPrefab: {fileID: 0}
   targetCameraPrefab: {fileID: 0}
-  followCamera: {fileID: 0}
-  targetingCameras: []
-  currentTarget: {fileID: 0}
-  possibleTargets:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   Reticle: {fileID: 2886342371984725041}
   distanceText: {fileID: 441456788397367717}
   sortingLabel: {fileID: 929105503748531525}
   sortingType: 1
   playerHeightOffset: 1.375
   cameraDistance: 3
-  CinemachineCameraTarget: {fileID: 0}
-  TopClamp: 70
-  BottomClamp: -30
+  followCameraTarget: {fileID: 0}
+  cameraClamp:
+    Minimum: -30
+    Maximum: 70
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  targetDistance: 0
+  followCamera: {fileID: 0}
+  targetingCameras: []
+  _cinemachineTargetYaw: 0
+  _cinemachineTargetPitch: 0
 --- !u!95 &6982812146204527121
 Animator:
   serializedVersion: 5
