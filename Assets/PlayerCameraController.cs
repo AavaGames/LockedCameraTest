@@ -2,15 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-using UnityEditor.PackageManager;
-using UnityEngine.Rendering;
 using StarterAssets;
-using UnityEngine.InputSystem.XR;
 using TMPro;
-using UnityEngine.UIElements;
-using Unity.VisualScripting;
-using System;
-using System.Linq;
 
 public class PlayerCameraController : MonoBehaviour
 {
@@ -29,6 +22,7 @@ public class PlayerCameraController : MonoBehaviour
 
     public UnityEngine.UI.Image Reticle;
     public TextMeshProUGUI distanceText;
+    public TextMeshProUGUI sortingLabel;
     private float _targetDistance = 0f;
     public float TargetDistance => _targetDistance;
 
@@ -65,9 +59,31 @@ public class PlayerCameraController : MonoBehaviour
                 cam = defaultCamera;
             }
             Reticle.enabled = _targetting;
-            distanceText.enabled = _targetting;
+            if (sortingType == SortingType.Distance)
+                distanceText.enabled = _targetting;
             ChangeCamera(cam);
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (_targetting)
+            {
+                controller.CameraLookAt(currentTarget.transform);
+                ChangeCamera(defaultCamera);
+                _targetting = false;
+                Reticle.enabled = false;
+                distanceText.enabled = false;
+            }
+
+            currentTarget = null;
+
+            if (sortingType == SortingType.Distance)
+                sortingType = SortingType.List;
+            else
+                sortingType = SortingType.Distance;
+        }
+
+        sortingLabel.text = sortingType.ToString();
 
         if (_targetting)
         {
