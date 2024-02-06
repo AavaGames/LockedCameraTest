@@ -1215,8 +1215,6 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   followCameraPrefab: {fileID: 0}
   targetCameraPrefab: {fileID: 0}
-  Reticle: {fileID: 2886342371984725041}
-  distanceText: {fileID: 441456788397367717}
   sortingLabel: {fileID: 929105503748531525}
   sortingType: 1
   playerHeightOffset: 1.375
@@ -1229,8 +1227,8 @@ MonoBehaviour:
   LockCameraPosition: 0
   followCamera: {fileID: 0}
   targetingCamera: {fileID: 0}
-  _cameraGoalYaw: 0
   _cameraGoalPitch: 0
+  _cameraGoalYaw: 0
   cameraRotationSpeed: {x: 20, y: 20}
 --- !u!95 &6982812146204527121
 Animator:

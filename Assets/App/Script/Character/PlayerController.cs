@@ -10,6 +10,26 @@ namespace Assets.App.Script.Character
         private PlayerCameraController _playerCameraController;
         // motor
 
+        private void Awake()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        private void Update()
+        {
+            if (IsOwner)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                }
+                else if (Input.GetMouseButtonDown(0))
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+            }
+        }
+
         public override void OnStartClient()
         {
             base.OnStartClient();

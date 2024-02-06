@@ -11,6 +11,7 @@ using FishNet;
 using GameKit.Utilities.Types;
 using NaughtyAttributes;
 using Assets.App.Script.Extensions;
+using DG.Tweening;
 
 namespace Assets.App.Script.Character
 {
@@ -18,6 +19,7 @@ namespace Assets.App.Script.Character
     {
         public enum SortingType { List, Distance }
 
+        private ReticleController _reticleController;
         private Targetable _targetable;
         private StarterAssetsInputs _input;
         private PlayerInput _playerInput;
@@ -27,10 +29,6 @@ namespace Assets.App.Script.Character
         [Foldout("Dependencies")]
         public GameObject targetCameraPrefab;
         [Foldout("Dependencies")]
-        public UnityEngine.UI.Image Reticle;
-        [Foldout("Dependencies")]
-        public TextMeshProUGUI distanceText;
-        [Foldout("Dependencies")]
         public TextMeshProUGUI sortingLabel;
 
         [OnValueChanged("SetTargetingTypeThroughInspector")]
@@ -39,13 +37,19 @@ namespace Assets.App.Script.Character
         public float playerHeightOffset = 1.375f;
         public float cameraDistance = 3.0f;
 
-        private Targetable currentTarget;
-        public Targetable CurrentTarget => currentTarget;
+        private bool _targeting = false;
+        public bool Targeting => _targeting;
         private List<Targetable> possibleTargets = new List<Targetable>();
         private int _targetIndex = -1;
-        private bool _targeting = false;
+        private Targetable currentTarget;
+        public Targetable CurrentTarget => currentTarget;
         private float _targetDistance = 0f;
         public float TargetDistance => _targetDistance;
+
+        private bool _targetFollowLockout = false;
+        private float _targetFollowLockoutTime = 0.1f;
+        private Coroutine _targetFollowLockoutCoroutine;
+
 
         [Header("Cameras")]
         public GameObject cameraTarget;
@@ -58,13 +62,15 @@ namespace Assets.App.Script.Character
         public CinemachineVirtualCamera followCamera;
         public CinemachineVirtualCamera targetingCamera;
         private CinemachineVirtualCamera _activeCamera;
+        public CinemachineVirtualCamera ActiveCamera => _activeCamera;
+        private Camera mainCamera;
 
-        [SerializeField]
-        [ReadOnly]
-        private float _cameraGoalYaw;
         [SerializeField]
         [ReadOnly] 
         private float _cameraGoalPitch;
+        [SerializeField]
+        [ReadOnly]
+        private float _cameraGoalYaw;
         private const float _threshold = 0.01f;
 
         public Vector2 cameraRotationSpeed = new Vector2(90, 90);
@@ -84,8 +90,6 @@ namespace Assets.App.Script.Character
             InstanceFinder.TimeManager.OnUpdate += TimeManager_OnUpdate;
             InstanceFinder.TimeManager.OnLateUpdate += TimeManager_OnLateUpdate;
 
-            Reticle.enabled = false;
-            distanceText.enabled = false;
             gameObject.SetActive(false);
         }
 
@@ -104,10 +108,12 @@ namespace Assets.App.Script.Character
 
             if (base.IsOwner)
             {
-                _targetable = transform.parent.GetComponentInChildren<Targetable>();
-                _playerInput = transform.parent.GetComponent<PlayerInput>();
+                _reticleController = GetComponent<ReticleController>();
+                _targetable = GetComponentInChildren<Targetable>();
+                _playerInput = GetComponent<PlayerInput>();
                 _playerInput.enabled = true;
-                _input = transform.parent.GetComponent<StarterAssetsInputs>();
+                _input = GetComponent<StarterAssetsInputs>();
+                mainCamera = Camera.main;
 
                 followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
                 followCamera.Follow = cameraTarget.transform;
@@ -140,13 +146,17 @@ namespace Assets.App.Script.Character
 
                     CinemachineVirtualCamera cam;
                     if (_targeting)
+                    {
                         cam = targetingCamera;
+                        _targetFollowLockout = false;
+                        _reticleController.Show(sortingType == SortingType.Distance);
+                    }
                     else
+                    {
                         cam = followCamera;
+                        _reticleController.Hide();
+                    }
 
-                    Reticle.enabled = _targeting;
-                    if (sortingType == SortingType.Distance)
-                        distanceText.enabled = _targeting;
                     ChangeCamera(cam);
                 }
 
@@ -174,12 +184,11 @@ namespace Assets.App.Script.Character
 
         private void TimeManager_OnLateUpdate()
         {
-            if (base.IsOwner)
+            if (IsOwner)
             {
                 if (_targeting)
                 {
                     _targetDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
-                    distanceText.text = _targetDistance.ToString("#.00");
                 }
                 else
                 {
@@ -190,7 +199,7 @@ namespace Assets.App.Script.Character
 
         private void LateUpdate()
         {
-            if (IsOwner)
+            if (IsOwner && Cursor.lockState == CursorLockMode.Locked)
             {
                 CameraRotation();
             }
@@ -202,8 +211,7 @@ namespace Assets.App.Script.Character
             {
                 ChangeCamera(followCamera);
                 _targeting = false;
-                Reticle.enabled = false;
-                distanceText.enabled = false;
+                _reticleController.Hide();
             }
 
             currentTarget = null;
@@ -223,6 +231,8 @@ namespace Assets.App.Script.Character
 
         private void FindTarget(bool forward)
         {
+            _targetFollowLockout = false;
+
             // TODO temporary targetable finder, rework into target manager
             possibleTargets = new List<Targetable>(FindObjectsOfType<Targetable>());
             foreach (Targetable targetable in possibleTargets)
@@ -305,61 +315,64 @@ namespace Assets.App.Script.Character
             _activeCamera = cam;
         }
 
+
+
+        private IEnumerator TargetFollowLockout()
+        {
+            _targetFollowLockout = true;
+            yield return new WaitForSeconds(_targetFollowLockoutTime);
+            _targetFollowLockout = false;
+            _targetFollowLockoutCoroutine = null;
+        }
+
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
+                if (_targetFollowLockoutCoroutine != null)
+                    StopCoroutine(_targetFollowLockoutCoroutine);
+                _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
+
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                float yaw = _cameraGoalYaw + _input.look.x * deltaTimeMultiplier;
                 float pitch = _cameraGoalPitch + _input.look.y * deltaTimeMultiplier;
-                SetCameraRotation(yaw, pitch);
+                float yaw = _cameraGoalYaw + _input.look.x * deltaTimeMultiplier;
+                SetCameraRotation(pitch, yaw);
             }
-            else if (_targeting)
+            else if (_targeting && !_targetFollowLockout)
             {
-                // move toward target
-
                 var player = new Vector3(transform.position.x, transform.position.y + playerHeightOffset, transform.position.z);
                 var target = currentTarget.transform.position;
 
                 var heading = target - player;
                 var distance = heading.magnitude;
-                var direction = heading / distance; // This is now the normalized direction
+                var direction = heading / distance;
 
                 var goalRotation = Quaternion.LookRotation(direction).eulerAngles;
 
-                var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraRotationSpeed.y * Time.deltaTime);
+                // TODO rework to a kind of tweener that uses easing
                 var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraRotationSpeed.x * Time.deltaTime);
+                var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraRotationSpeed.y * Time.deltaTime);
 
-                SetCameraRotation(yaw, pitch);
+                SetCameraRotation(pitch, yaw);
             }
 
             cameraTarget.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);
         }
 
-        private void SetCameraRotation(float yaw, float pitch)
+        private void SetCameraRotation(float pitch, float yaw)
         {
             if (pitch > 180f) // fixes clamping issue
                 pitch -= 360;
 
-            _cameraGoalYaw = yaw;
             _cameraGoalPitch = pitch;
+            _cameraGoalYaw = yaw;
 
             // only when manual?
-            _cameraGoalYaw = ClampAngle(_cameraGoalYaw, float.MinValue, float.MaxValue);
             _cameraGoalPitch = ClampAngle(_cameraGoalPitch, cameraClamp.Minimum, cameraClamp.Maximum);
-        }
-
-        public void FollowCameraLookAt(Transform target)
-        {
-            cameraTarget.transform.LookAt(target);
-            _cameraGoalYaw = cameraTarget.transform.rotation.eulerAngles.y;
-            var pitch = cameraTarget.transform.rotation.eulerAngles.x;
-            if (pitch > 180f) // fixes clamping issue in CameraRotation()
-                pitch -= 360;
-            _cameraGoalYaw = pitch;
+            _cameraGoalYaw = ClampAngle(_cameraGoalYaw, float.MinValue, float.MaxValue);
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
