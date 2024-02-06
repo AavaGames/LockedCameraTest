@@ -12,6 +12,7 @@ using GameKit.Utilities.Types;
 using NaughtyAttributes;
 using Assets.App.Script.Extensions;
 using DG.Tweening;
+using Assets.App.Script.Combat;
 
 namespace Assets.App.Script.Character
 {
@@ -20,7 +21,7 @@ namespace Assets.App.Script.Character
         public enum SortingType { List, Distance }
 
         private ReticleController _reticleController;
-        private Targetable _targetable;
+        private Target _target;
         private StarterAssetsInputs _input;
         private PlayerInput _playerInput;
 
@@ -39,10 +40,10 @@ namespace Assets.App.Script.Character
 
         private bool _targeting = false;
         public bool Targeting => _targeting;
-        private List<Targetable> possibleTargets = new List<Targetable>();
+        private List<Target> possibleTargets = new List<Target>();
         private int _targetIndex = -1;
-        private Targetable currentTarget;
-        public Targetable CurrentTarget => currentTarget;
+        private Target currentTarget;
+        public Target CurrentTarget => currentTarget;
         private float _targetDistance = 0f;
         public float TargetDistance => _targetDistance;
 
@@ -109,7 +110,7 @@ namespace Assets.App.Script.Character
             if (base.IsOwner)
             {
                 _reticleController = GetComponent<ReticleController>();
-                _targetable = GetComponentInChildren<Targetable>();
+                _target = GetComponentInChildren<Target>();
                 _playerInput = GetComponent<PlayerInput>();
                 _playerInput.enabled = true;
                 _input = GetComponent<StarterAssetsInputs>();
@@ -232,22 +233,16 @@ namespace Assets.App.Script.Character
         private void FindTarget(bool forward)
         {
             _targetFollowLockout = false;
-
-            // TODO temporary targetable finder, rework into target manager
-            possibleTargets = new List<Targetable>(FindObjectsOfType<Targetable>());
-            foreach (Targetable targetable in possibleTargets)
-            {
-                if (targetable.gameObject == _targetable.gameObject)
-                {
-                    possibleTargets.Remove(targetable);
-                    break;
-                }
-            }
+            
+            if (_target.hasNewTargets)
+                possibleTargets = _target.GetTargets(false);
 
             if (possibleTargets.Count < 1)
             {
                 Debug.LogError("No targets in list");
                 _targeting = false;
+                ChangeCamera(followCamera);
+                _reticleController.Hide();
                 return;
             }
 
@@ -314,8 +309,6 @@ namespace Assets.App.Script.Character
             cam.MoveToTopOfPrioritySubqueue();
             _activeCamera = cam;
         }
-
-
 
         private IEnumerator TargetFollowLockout()
         {

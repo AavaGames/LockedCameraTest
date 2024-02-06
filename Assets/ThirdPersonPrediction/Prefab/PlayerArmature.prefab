@@ -1990,7 +1990,7 @@ GameObject:
   - component: {fileID: 1055505538464209814}
   - component: {fileID: 4679213022105968460}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: PlayerCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2217,10 +2217,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 54170341162366821}
-  - {fileID: 3274072566037244433}
   - {fileID: 1508356748671528603}
   - {fileID: 601523878587009455}
   - {fileID: 7249975474517554148}
+  - {fileID: 3274072566037244433}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6412326309795757311
@@ -2284,6 +2284,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298b8308309e0de4eaecfb7613cd9279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 1428437583}
+  _networkObjectCache: {fileID: 1428437583}
+  playerCanvas: {fileID: 1546533758241658452}
   reticle: {fileID: 7130207793462097467}
   distanceText: {fileID: 5034586835424538992}
   closeRange: 5
@@ -2300,7 +2304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b99122c63203bf418e6fe81fd237d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   MoveSpeed: 2
@@ -2530,6 +2534,7 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 6412326309795757311}
   - {fileID: 6870194006964006394}
+  - {fileID: 3176412614883773830}
   - {fileID: 1428437584}
   - {fileID: 4520246718899596234}
   - {fileID: 3108237761144598446}
@@ -2561,7 +2566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 4
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   _componentConfiguration: 0
@@ -2606,7 +2611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cac635f24954048aad3a6ff9110beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 4
+  _componentIndexCache: 5
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   IgnoredParameters: []
@@ -3126,7 +3131,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1.5
+  m_text: 10.50
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -1,4 +1,5 @@
-﻿using NaughtyAttributes;
+﻿using FishNet.Object;
+using NaughtyAttributes;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -7,10 +8,12 @@ using UnityEngine.UI;
 
 namespace Assets.App.Script.Character
 {
-    public class ReticleController : MonoBehaviour
+    public class ReticleController : NetworkBehaviour
     {
         private PlayerCameraController _playerCameraController;
 
+        [Foldout("Dependencies")]
+        public Canvas playerCanvas;
         [Foldout("Dependencies")]
         public Image reticle;
         [Foldout("Dependencies")]
@@ -24,8 +27,19 @@ namespace Assets.App.Script.Character
         {
             _playerCameraController = GetComponent<PlayerCameraController>();
 
+            playerCanvas.enabled = false;
             reticle.enabled = false;
             distanceText.enabled = false;
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
+            if (IsOwner)
+            {
+                playerCanvas.enabled = true;
+            }
         }
 
         // Update is called once per frame
@@ -53,9 +67,8 @@ namespace Assets.App.Script.Character
         private void UpdateReticle()
         {
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(_playerCameraController.CurrentTarget.transform.position);
-            float reticleWidth = reticle.rectTransform.sizeDelta.x;
-            float reticleHeight = reticle.rectTransform.sizeDelta.y;
-
+            
+            // Can switch images because its off the screen to point in direction of target
             screenPosition.x = Mathf.Clamp(screenPosition.x, 0, Screen.width);
             screenPosition.y = Mathf.Clamp(screenPosition.y, 0, Screen.height);
             reticle.rectTransform.position = screenPosition;
