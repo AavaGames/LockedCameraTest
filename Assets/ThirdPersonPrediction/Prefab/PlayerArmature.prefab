@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c24a1c8f59ac1a41853198f708edc2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 4
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   followCameraPrefab: {fileID: 763043542228073354, guid: 6c30e0f092b0f1148bdc8529282aec05,
@@ -185,15 +185,17 @@ MonoBehaviour:
   sortingType: 1
   playerHeightOffset: 1.375
   cameraDistance: 3
-  followCameraTarget: {fileID: 1508356748671528604}
+  cameraTarget: {fileID: 1508356748671528604}
   cameraClamp:
     Minimum: -30
     Maximum: 70
   CameraAngleOverride: 0
   LockCameraPosition: 0
   followCamera: {fileID: 0}
-  targetingCameras: []
-  targetDistance: 0
+  targetingCamera: {fileID: 0}
+  _cameraGoalYaw: 0
+  _cameraGoalPitch: 0
+  cameraRotationSpeed: {x: 90, y: 90}
 --- !u!1 &454845475019537297
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1508356748671528603}
   m_Layer: 0
-  m_Name: PlayerCameraRoot
+  m_Name: PlayerCameraTarget
   m_TagString: CinemachineTarget
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1011,7 +1013,7 @@ GameObject:
   - component: {fileID: 54170341162366821}
   - component: {fileID: 7712155424432374342}
   m_Layer: 8
-  m_Name: Target
+  m_Name: PlayerTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2250,12 +2252,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5860038406115200381}
+  - component: {fileID: 6412326309795757311}
+  - component: {fileID: 1428437584}
   - component: {fileID: 554828090469603079}
   - component: {fileID: 6492177789537802189}
   - component: {fileID: 3961116077872594231}
   - component: {fileID: 7401250791991937979}
   - component: {fileID: 6492177789537802187}
-  - component: {fileID: 1428437584}
   - component: {fileID: 1428437583}
   - component: {fileID: 4520246718899596234}
   - component: {fileID: 3108237761144598446}
@@ -2287,6 +2290,63 @@ Transform:
   - {fileID: 7249975474517554148}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6412326309795757311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492177789537802183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acc682798b3e6674f8f3645ddf0d75fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 1428437583}
+  _networkObjectCache: {fileID: 1428437583}
+--- !u!114 &1428437584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492177789537802183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b99122c63203bf418e6fe81fd237d88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 1428437583}
+  _networkObjectCache: {fileID: 1428437583}
+  MoveSpeed: 2
+  SprintSpeed: 5.335
+  RotationSmoothTime: 12
+  SpeedChangeRate: 10
+  LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  FootstepAudioClips:
+  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
+  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
+  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
+  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
+  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
+  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
+  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
+  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
+  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
+  FootstepAudioVolume: 0.5
+  JumpHeight: 1.2
+  Gravity: -15
+  JumpTimeout: 0.5
+  FallTimeout: 0.15
+  Grounded: 1
+  GroundedOffset: -0.14
+  GroundedRadius: 0.28
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!95 &554828090469603079
 Animator:
   serializedVersion: 5
@@ -2469,48 +2529,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1428437584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6492177789537802183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b99122c63203bf418e6fe81fd237d88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 1428437583}
-  _networkObjectCache: {fileID: 1428437583}
-  MoveSpeed: 2
-  SprintSpeed: 5.335
-  RotationSmoothTime: 12
-  SpeedChangeRate: 10
-  LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
-  FootstepAudioClips:
-  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
-  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
-  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
-  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
-  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
-  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
-  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
-  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
-  FootstepAudioVolume: 0.5
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.5
-  FallTimeout: 0.15
-  Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.28
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
 --- !u!114 &1428437583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2527,6 +2545,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 6412326309795757311}
   - {fileID: 1428437584}
   - {fileID: 4520246718899596234}
   - {fileID: 3108237761144598446}
@@ -2559,7 +2578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   _componentConfiguration: 0
@@ -2604,7 +2623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cac635f24954048aad3a6ff9110beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   IgnoredParameters: []

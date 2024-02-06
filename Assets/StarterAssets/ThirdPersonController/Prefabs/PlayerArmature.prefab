@@ -1221,16 +1221,17 @@ MonoBehaviour:
   sortingType: 1
   playerHeightOffset: 1.375
   cameraDistance: 3
-  followCameraTarget: {fileID: 0}
+  cameraTarget: {fileID: 0}
   cameraClamp:
     Minimum: -30
     Maximum: 70
   CameraAngleOverride: 0
   LockCameraPosition: 0
   followCamera: {fileID: 0}
-  targetingCameras: []
-  _cinemachineTargetYaw: 0
-  _cinemachineTargetPitch: 0
+  targetingCamera: {fileID: 0}
+  _cameraGoalYaw: 0
+  _cameraGoalPitch: 0
+  cameraRotationSpeed: {x: 20, y: 20}
 --- !u!95 &6982812146204527121
 Animator:
   serializedVersion: 5
