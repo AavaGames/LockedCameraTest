@@ -13,6 +13,8 @@ using NaughtyAttributes;
 using Assets.App.Script.Extensions;
 using DG.Tweening;
 using Assets.App.Script.Combat;
+using Assets.App.Scripts.Character;
+using System;
 
 namespace Assets.App.Script.Character
 {
@@ -22,8 +24,7 @@ namespace Assets.App.Script.Character
 
         private ReticleController _reticleController;
         private Target _target;
-        private StarterAssetsInputs _input;
-        private PlayerInput _playerInput;
+        private PlayerCharacterInput _input;
 
         [Foldout("Dependencies")]
         public GameObject followCameraPrefab;
@@ -40,7 +41,7 @@ namespace Assets.App.Script.Character
 
         private bool _targeting = false;
         public bool Targeting => _targeting;
-        private List<Target> possibleTargets = new List<Target>();
+        private List<Target> validTargets = new List<Target>();
         private int _targetIndex = -1;
         private Target currentTarget;
         public Target CurrentTarget => currentTarget;
@@ -76,15 +77,6 @@ namespace Assets.App.Script.Character
 
         public Vector2 cameraRotationSpeed = new Vector2(90, 90);
 
-        private bool IsCurrentDeviceMouse
-        {
-            get
-            {
-                if (_playerInput == null) return false;
-                return _playerInput.currentControlScheme == "KeyboardMouse"; // TODO update
-            }
-        }
-
 
         void Awake()
         {
@@ -111,9 +103,7 @@ namespace Assets.App.Script.Character
             {
                 _reticleController = GetComponent<ReticleController>();
                 _target = GetComponentInChildren<Target>();
-                _playerInput = GetComponent<PlayerInput>();
-                _playerInput.enabled = true;
-                _input = GetComponent<StarterAssetsInputs>();
+                _input = GetComponent<PlayerCharacterInput>();
                 mainCamera = Camera.main;
 
                 followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
@@ -125,6 +115,11 @@ namespace Assets.App.Script.Character
                 SetCameraRotation(cameraTarget.transform.rotation.eulerAngles.y, cameraTarget.transform.rotation.eulerAngles.x);
                 SetTargetingType(sortingType);
 
+                _input.actions["Target"].performed += ctx => { ToggleTargeting(); };
+                _input.actions["CycleTargetSorting"].performed += ctx => { CycleTargetSorting(); };
+                _input.actions["NextTarget"].performed += ctx => { FindTarget(true); };
+                _input.actions["PreviousTarget"].performed += ctx => { FindTarget(false); };
+
                 gameObject.SetActive(true);
             }
         }
@@ -134,52 +129,43 @@ namespace Assets.App.Script.Character
             base.OnStartNetwork();
         }
 
+        private void ToggleTargeting()
+        {
+            _targeting = !_targeting;
+
+            if (currentTarget == null)
+                FindTarget(true);
+
+            CinemachineVirtualCamera cam;
+            if (_targeting)
+            {
+                cam = targetingCamera;
+                _targetFollowLockout = false;
+                _reticleController.Show(sortingType == SortingType.Distance);
+            }
+            else
+            {
+                cam = followCamera;
+                _reticleController.Hide();
+            }
+
+            ChangeCamera(cam);
+        }
+
+        private void CycleTargetSorting()
+        {
+            if (sortingType == SortingType.Distance)
+                SetTargetingType(SortingType.List);
+            else
+                SetTargetingType(SortingType.Distance);
+        }
+
         void TimeManager_OnUpdate()
         {
             if (IsOwner)
             {
-                if (Input.GetKeyDown(KeyCode.Tab))
-                {
-                    _targeting = !_targeting;
 
-                    if (currentTarget == null)
-                        FindTarget(true);
 
-                    CinemachineVirtualCamera cam;
-                    if (_targeting)
-                    {
-                        cam = targetingCamera;
-                        _targetFollowLockout = false;
-                        _reticleController.Show(sortingType == SortingType.Distance);
-                    }
-                    else
-                    {
-                        cam = followCamera;
-                        _reticleController.Hide();
-                    }
-
-                    ChangeCamera(cam);
-                }
-
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    if (sortingType == SortingType.Distance)
-                        SetTargetingType(SortingType.List);
-                    else
-                        SetTargetingType(SortingType.Distance);
-                }
-
-                if (_targeting)
-                {
-                    if (Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        FindTarget(false);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Alpha3))
-                    {
-                        FindTarget(true);
-                    }
-                }
             }
         }
 
@@ -200,7 +186,7 @@ namespace Assets.App.Script.Character
 
         private void LateUpdate()
         {
-            if (IsOwner && Cursor.lockState == CursorLockMode.Locked)
+            if (IsOwner)
             {
                 CameraRotation();
             }
@@ -235,14 +221,12 @@ namespace Assets.App.Script.Character
             _targetFollowLockout = false;
             
             if (_target.hasNewTargets)
-                possibleTargets = _target.GetTargets(false);
+                validTargets = _target.GetTargets(false);
 
-            if (possibleTargets.Count < 1)
+            if (validTargets.Count < 1)
             {
-                Debug.LogError("No targets in list");
-                _targeting = false;
-                ChangeCamera(followCamera);
-                _reticleController.Hide();
+                Debug.LogWarning(gameObject.name + " has no valid targets");
+                ToggleTargeting();
                 return;
             }
 
@@ -259,19 +243,19 @@ namespace Assets.App.Script.Character
                         index++;
                     else
                         index--;
-                    _targetIndex = IntExtension.WrapIndex(index, possibleTargets.Count);
+                    _targetIndex = IntExtension.WrapIndex(index, validTargets.Count);
                 }
             }
             else if (sortingType == SortingType.Distance)
             {
-                List<float> distances = new List<float>(possibleTargets.Count);
+                List<float> distances = new List<float>(validTargets.Count);
                 Vector3 pos = transform.position; // speeds up loop
                 float currentTargetDistance = 0;
 
-                for (int i = 0; i < possibleTargets.Count; i++)
+                for (int i = 0; i < validTargets.Count; i++)
                 {
                     // Can be further optimized by skipping square root
-                    float distance = Vector3.Distance(pos, possibleTargets[i].transform.position);
+                    float distance = Vector3.Distance(pos, validTargets[i].transform.position);
                     distances.Add(distance);
 
                     if (i == _targetIndex)
@@ -300,7 +284,7 @@ namespace Assets.App.Script.Character
                 _targetIndex = originalDistances.IndexOf(distances[index]);
             }
 
-            currentTarget = possibleTargets[_targetIndex];
+            currentTarget = validTargets[_targetIndex];
         }
 
         private void ChangeCamera(CinemachineVirtualCamera cam)
@@ -320,36 +304,39 @@ namespace Assets.App.Script.Character
 
         private void CameraRotation()
         {
-            // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (Cursor.lockState == CursorLockMode.Locked)
             {
-                if (_targetFollowLockoutCoroutine != null)
-                    StopCoroutine(_targetFollowLockoutCoroutine);
-                _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
+                // if there is an input and camera position is not fixed
+                if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+                {
+                    if (_targetFollowLockoutCoroutine != null)
+                        StopCoroutine(_targetFollowLockoutCoroutine);
+                    _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
 
-                //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                    //Don't multiply mouse input by Time.deltaTime;
+                    float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                float pitch = _cameraGoalPitch + _input.look.y * deltaTimeMultiplier;
-                float yaw = _cameraGoalYaw + _input.look.x * deltaTimeMultiplier;
-                SetCameraRotation(pitch, yaw);
-            }
-            else if (_targeting && !_targetFollowLockout)
-            {
-                var player = new Vector3(transform.position.x, transform.position.y + playerHeightOffset, transform.position.z);
-                var target = currentTarget.transform.position;
+                    float pitch = _cameraGoalPitch + _input.look.y;
+                    float yaw = _cameraGoalYaw + _input.look.x;
+                    SetCameraRotation(pitch, yaw);
+                }
+                else if (_targeting && !_targetFollowLockout)
+                {
+                    var player = new Vector3(transform.position.x, transform.position.y + playerHeightOffset, transform.position.z);
+                    var target = currentTarget.transform.position;
 
-                var heading = target - player;
-                var distance = heading.magnitude;
-                var direction = heading / distance;
+                    var heading = target - player;
+                    var distance = heading.magnitude;
+                    var direction = heading / distance;
 
-                var goalRotation = Quaternion.LookRotation(direction).eulerAngles;
+                    var goalRotation = Quaternion.LookRotation(direction).eulerAngles;
 
-                // TODO rework to a kind of tweener that uses easing
-                var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraRotationSpeed.x * Time.deltaTime);
-                var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraRotationSpeed.y * Time.deltaTime);
+                    // TODO rework to a kind of tweener that uses easing
+                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraRotationSpeed.x * Time.deltaTime);
+                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraRotationSpeed.y * Time.deltaTime);
 
-                SetCameraRotation(pitch, yaw);
+                    SetCameraRotation(pitch, yaw);
+                }
             }
 
             cameraTarget.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);

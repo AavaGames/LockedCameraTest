@@ -1,3 +1,4 @@
+using Assets.App.Scripts.Character;
 using Cinemachine;
 using FishNet;
 using FishNet.Object;
@@ -79,22 +80,12 @@ public class PredictionMotor : NetworkBehaviour
     private PlayerInput _playerInput;
     private Animator _animator;
     private CharacterController _controller;
-    private StarterAssetsInputs _input;
+    private PlayerCharacterInput _input;
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
 
     private bool _hasAnimator;
-
-    private bool IsCurrentDeviceMouse
-    {
-        get
-        {
-            if (_playerInput == null) return false;
-
-            return _playerInput.currentControlScheme == "KeyboardMouse";
-        }
-    }
 
     //MoveData for client simulation
     private MoveData _clientMoveData;
@@ -166,9 +157,7 @@ public class PredictionMotor : NetworkBehaviour
         if (base.IsOwner)
         {
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            _playerInput = GetComponent<PlayerInput>();
-            _playerInput.enabled = true;
-            _input = GetComponent<StarterAssetsInputs>();            
+            _input = GetComponent<PlayerCharacterInput>();            
         }
     }
 
@@ -227,12 +216,10 @@ public class PredictionMotor : NetworkBehaviour
         md = new MoveData()
         {
             Move = _input.move,
-            Jump = _input.jump,
+            Jump = _input.actions["MovementAbility"].IsPressed(),
             CameraEulerY = _mainCamera.transform.eulerAngles.y,
-            Sprint = _input.sprint,
+            Sprint = _input.actions["Sprint"].IsPressed(),
         };
-
-        _input.jump = false;
     }
 
     [Replicate]

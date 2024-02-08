@@ -1,3 +1,4 @@
+using Assets.App.Scripts.Character;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,19 +8,22 @@ namespace Assets.App.Script.Character
 {
     public class PlayerController : NetworkBehaviour
     {
+        private PlayerCharacterInput _input;
         private PlayerCameraController _playerCameraController;
         // motor
 
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
+
+            _input = GetComponent<PlayerCharacterInput>();
         }
 
         private void Update()
         {
             if (IsOwner)
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (_input.actions["Pause"].WasPressedThisFrame())
                 {
                     Cursor.lockState = CursorLockMode.None;
                 }
