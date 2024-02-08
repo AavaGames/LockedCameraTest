@@ -2190,7 +2190,7 @@ GameObject:
   - component: {fileID: 6412326309795757311}
   - component: {fileID: 6870194006964006394}
   - component: {fileID: 3176412614883773830}
-  - component: {fileID: 1428437584}
+  - component: {fileID: 1582589437405957810}
   - component: {fileID: 5387830731026041219}
   - component: {fileID: 6492177789537802187}
   - component: {fileID: 554828090469603079}
@@ -2295,7 +2295,7 @@ MonoBehaviour:
   distanceText: {fileID: 5034586835424538992}
   closeRange: 5
   midRange: 15
---- !u!114 &1428437584
+--- !u!114 &1582589437405957810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2304,12 +2304,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6492177789537802183}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b99122c63203bf418e6fe81fd237d88, type: 3}
+  m_Script: {fileID: 11500000, guid: 4474e4e0edbe6bd428d456fec0b9b365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 4
+  _componentIndexCache: 255
   _addedNetworkObject: {fileID: 1428437583}
-  _networkObjectCache: {fileID: 1428437583}
+  _networkObjectCache: {fileID: 0}
   MoveSpeed: 2
   SprintSpeed: 5.335
   RotationSmoothTime: 12
@@ -2349,7 +2349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad454daa39b2cf540a57730d00c0da5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 4
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
 --- !u!114 &6492177789537802187
@@ -2534,8 +2534,8 @@ MonoBehaviour:
   - {fileID: 6412326309795757311}
   - {fileID: 6870194006964006394}
   - {fileID: 3176412614883773830}
+  - {fileID: 0}
   - {fileID: 5387830731026041219}
-  - {fileID: 1428437584}
   - {fileID: 4520246718899596234}
   - {fileID: 3108237761144598446}
   <ParentNetworkObject>k__BackingField: {fileID: 0}

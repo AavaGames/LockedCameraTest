@@ -2,19 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-using StarterAssets;
 using TMPro;
 using FishNet.Object;
-using UnityEngine.InputSystem;
-using Input = UnityEngine.Input;
 using FishNet;
 using GameKit.Utilities.Types;
 using NaughtyAttributes;
 using Assets.App.Script.Extensions;
-using DG.Tweening;
 using Assets.App.Script.Combat;
 using Assets.App.Scripts.Character;
-using System;
 
 namespace Assets.App.Script.Character
 {
@@ -24,7 +19,7 @@ namespace Assets.App.Script.Character
 
         private ReticleController _reticleController;
         private Target _target;
-        private PlayerCharacterInput _input;
+        private PlayerInputController _input;
 
         [Foldout("Dependencies")]
         public GameObject followCameraPrefab;
@@ -103,7 +98,7 @@ namespace Assets.App.Script.Character
             {
                 _reticleController = GetComponent<ReticleController>();
                 _target = GetComponentInChildren<Target>();
-                _input = GetComponent<PlayerCharacterInput>();
+                _input = GetComponent<PlayerInputController>();
                 mainCamera = Camera.main;
 
                 followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();

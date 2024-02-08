@@ -8,7 +8,7 @@ namespace Assets.App.Script.Character
 {
     public class PlayerController : NetworkBehaviour
     {
-        private PlayerCharacterInput _input;
+        private PlayerInputController _input;
         private PlayerCameraController _playerCameraController;
         // motor
 
@@ -16,7 +16,7 @@ namespace Assets.App.Script.Character
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            _input = GetComponent<PlayerCharacterInput>();
+            _input = GetComponent<PlayerInputController>();
         }
 
         private void Update()

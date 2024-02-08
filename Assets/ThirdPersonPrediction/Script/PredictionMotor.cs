@@ -80,7 +80,7 @@ public class PredictionMotor : NetworkBehaviour
     private PlayerInput _playerInput;
     private Animator _animator;
     private CharacterController _controller;
-    private PlayerCharacterInput _input;
+    private PlayerInputController _input;
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
@@ -157,7 +157,7 @@ public class PredictionMotor : NetworkBehaviour
         if (base.IsOwner)
         {
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            _input = GetComponent<PlayerCharacterInput>();            
+            _input = GetComponent<PlayerInputController>();            
         }
     }
 

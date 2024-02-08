@@ -7,7 +7,7 @@ namespace Assets.App.Scripts.Character
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerCharacterInput : NetworkBehaviour
+    public class PlayerInputController : NetworkBehaviour
     {
         public PlayerInput input { get; private set; }
         
@@ -60,6 +60,7 @@ namespace Assets.App.Scripts.Character
         {
             return input.actions[actionName];
         }
+
 
         #region Inputs
 
