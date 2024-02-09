@@ -68,7 +68,7 @@ namespace Assets.App.Script.Character
         [SerializeField]
         [ReadOnly]
         private float _cameraGoalYaw;
-        private const float _threshold = 0.01f;
+        private const float LOOK_THRESHOLD = 0.01f;
 
         public Vector2 cameraRotationSpeed = new Vector2(90, 90);
 
@@ -302,7 +302,7 @@ namespace Assets.App.Script.Character
             if (Cursor.lockState == CursorLockMode.Locked)
             {
                 // if there is an input and camera position is not fixed
-                if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+                if (_input.look.sqrMagnitude >= LOOK_THRESHOLD && !LockCameraPosition)
                 {
                     if (_targetFollowLockoutCoroutine != null)
                         StopCoroutine(_targetFollowLockoutCoroutine);

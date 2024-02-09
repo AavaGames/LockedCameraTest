@@ -2188,9 +2188,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5860038406115200381}
   - component: {fileID: 6412326309795757311}
+  - component: {fileID: 1582589437405957810}
   - component: {fileID: 6870194006964006394}
   - component: {fileID: 3176412614883773830}
-  - component: {fileID: 1582589437405957810}
   - component: {fileID: 5387830731026041219}
   - component: {fileID: 6492177789537802187}
   - component: {fileID: 554828090469603079}
@@ -2241,6 +2241,46 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
+--- !u!114 &1582589437405957810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492177789537802183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4474e4e0edbe6bd428d456fec0b9b365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 1428437583}
+  _networkObjectCache: {fileID: 1428437583}
+  moveSpeed: 3.5
+  rotationSmoothSpeed: 12
+  speedChangeRate: 10
+  jumpHeight: 1.2
+  gravity: -15
+  jumpTimeout: 0.5
+  fallTimeout: 0.15
+  grounded: 1
+  groundedOffset: -0.14
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  landingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  footstepAudioClips:
+  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
+  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
+  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
+  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
+  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
+  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
+  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
+  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
+  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
+  footstepAudioVolume: 0.5
 --- !u!114 &6870194006964006394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2287,7 +2327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298b8308309e0de4eaecfb7613cd9279, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
   playerCanvas: {fileID: 1546533758241658452}
@@ -2295,48 +2335,6 @@ MonoBehaviour:
   distanceText: {fileID: 5034586835424538992}
   closeRange: 5
   midRange: 15
---- !u!114 &1582589437405957810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6492177789537802183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4474e4e0edbe6bd428d456fec0b9b365, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 255
-  _addedNetworkObject: {fileID: 1428437583}
-  _networkObjectCache: {fileID: 0}
-  MoveSpeed: 2
-  SprintSpeed: 5.335
-  RotationSmoothTime: 12
-  SpeedChangeRate: 10
-  LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
-  FootstepAudioClips:
-  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
-  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
-  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
-  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
-  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
-  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
-  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
-  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
-  FootstepAudioVolume: 0.5
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.5
-  FallTimeout: 0.15
-  Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.28
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
 --- !u!114 &5387830731026041219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2533,8 +2531,8 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 6412326309795757311}
   - {fileID: 6870194006964006394}
+  - {fileID: 1582589437405957810}
   - {fileID: 3176412614883773830}
-  - {fileID: 0}
   - {fileID: 5387830731026041219}
   - {fileID: 4520246718899596234}
   - {fileID: 3108237761144598446}

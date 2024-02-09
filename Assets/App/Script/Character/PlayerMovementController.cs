@@ -4,7 +4,7 @@ using FishNet;
 using FishNet.Object;
 using FishNet.Object.Prediction;
 using FishNet.Transporting;
-using StarterAssets;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,76 +16,67 @@ namespace Assets.App.Scripts.Character
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float MoveSpeed = 2.0f;
-
-        [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 5.335f;
+        public float moveSpeed = 3.5f;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(10f, 30f)]
-        public float RotationSmoothTime = 12f;
+        public float rotationSmoothSpeed = 12f;
 
         [Tooltip("Acceleration and deceleration")]
-        public float SpeedChangeRate = 10.0f;
-
-        public AudioClip LandingAudioClip;
-        public AudioClip[] FootstepAudioClips;
-        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+        public float speedChangeRate = 10.0f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
-        public float JumpHeight = 1.2f;
+        public float jumpHeight = 1.2f;
 
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-        public float Gravity = -15.0f;
+        public float gravity = -15.0f;
+        public float terminalVelocity = 53.0f;
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-        public float JumpTimeout = 0.50f;
+        public float jumpTimeout = 0.50f;
 
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-        public float FallTimeout = 0.15f;
+        public float fallTimeout = 0.15f;
 
         [Header("Player Grounded")]
-        [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-        public bool Grounded = true;
+        [Tooltip("If the character is grounded or not. Separate from CharacterController built in grounded check")]
+        public bool grounded = true;
 
         [Tooltip("Useful for rough ground")]
-        public float GroundedOffset = -0.14f;
-
-        [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-        public float GroundedRadius = 0.28f;
+        public float groundedOffset = -0.14f;
 
         [Tooltip("What layers the character uses as ground")]
-        public LayerMask GroundLayers;
+        public LayerMask groundLayers;
 
-
+        [Foldout("Audio")]
+        public AudioClip landingAudioClip;
+        [Foldout("Audio")]
+        public AudioClip[] footstepAudioClips;
+        [Foldout("Audio")]
+        [Range(0, 1)] public float footstepAudioVolume = 0.5f;
 
         // player
-        private float _animationBlend;
         private float _targetRotation = 0.0f;
-        private float _rotationVelocity;
-        private float _verticalVelocity;
-        private float _terminalVelocity = 53.0f;
+        private float _verticalVelocity = 0.0f;
 
         // timeout deltatime
-        private float _jumpTimeoutDelta;
-        private float _fallTimeoutDelta;
+        private float _jumpTimeoutTimer;
+        private float _fallTimeoutTimer;
 
-        // animation IDs
+        // animation
+        private float _animationBlend;
         private int _animIDSpeed;
-        private int _animIDGrounded;
+        private int _animIDgrounded;
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
-        private PlayerInput _playerInput;
         private Animator _animator;
         private CharacterController _controller;
         private PlayerInputController _input;
         private GameObject _mainCamera;
-
-        private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
 
@@ -109,21 +100,21 @@ namespace Assets.App.Scripts.Character
         //ReconcileData for Reconciliation
         public struct ReconcileData : IReconcileData
         {
-            public Vector3 Position;
-            public Quaternion Rotation;
-            public float VerticalVelocity;
-            public float FallTimeout;
-            public float JumpTimeout;
-            public bool Grounded;
+            public Vector3 position;
+            public Quaternion rotation;
+            public float verticalVelocity;
+            public float fallTimeout;
+            public float jumpTimeout;
+            public bool grounded;
 
             public ReconcileData(Vector3 position, Quaternion rotation, float verticalVelocity, float fallTimeout, float jumpTimeout, bool grounded)
             {
-                Position = position;
-                Rotation = rotation;
-                VerticalVelocity = verticalVelocity;
-                FallTimeout = fallTimeout;
-                JumpTimeout = jumpTimeout;
-                Grounded = grounded;
+                this.position = position;
+                this.rotation = rotation;
+                this.verticalVelocity = verticalVelocity;
+                this.fallTimeout = fallTimeout;
+                this.jumpTimeout = jumpTimeout;
+                this.grounded = grounded;
                 _tick = 0;
             }
 
@@ -154,12 +145,12 @@ namespace Assets.App.Scripts.Character
         {
             base.OnStartClient();
 
-            _controller.enabled = (base.IsServer || base.IsOwner);
+            _controller.enabled = (IsServer || IsOwner);
 
-            if (base.IsOwner)
+            if (IsOwner)
             {
-                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
                 _input = GetComponent<PlayerInputController>();
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
         }
 
@@ -172,29 +163,30 @@ namespace Assets.App.Scripts.Character
             AssignAnimationIDs();
 
             // reset our timeouts on start
-            _fallTimeoutDelta = FallTimeout;
-            _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutTimer = fallTimeout;
+            _jumpTimeoutTimer = jumpTimeout;
         }
 
         private void TimeManager_OnTick()
         {
-            if (base.IsOwner)
+            if (IsOwner)
             {
                 Reconciliation(default, false);
                 CheckInput(out MoveData md);
                 Move(md, false);
             }
-            if (base.IsServer)
+            if (IsServer)
             {
                 Move(default, true);
-                ReconcileData rd = new ReconcileData(transform.position, transform.rotation, _verticalVelocity, _fallTimeoutDelta, _jumpTimeoutDelta, Grounded);
+                ReconcileData rd = new ReconcileData(transform.position, transform.rotation, _verticalVelocity, 
+                    _fallTimeoutTimer, _jumpTimeoutTimer, grounded);
                 Reconciliation(rd, true);
             }
         }
 
         private void TimeManager_OnUpdate()
         {
-            if (base.IsOwner)
+            if (IsOwner)
             {
                 JumpAndGravity(_clientMoveData, Time.deltaTime);
                 GroundedCheck();
@@ -205,12 +197,12 @@ namespace Assets.App.Scripts.Character
         [Reconcile]
         private void Reconciliation(ReconcileData rd, bool asServer, Channel channel = Channel.Unreliable)
         {
-            transform.position = rd.Position;
-            transform.rotation = rd.Rotation;
-            _verticalVelocity = rd.VerticalVelocity;
-            _fallTimeoutDelta = rd.FallTimeout;
-            _jumpTimeoutDelta = rd.JumpTimeout;
-            Grounded = rd.Grounded;
+            transform.position = rd.position;
+            transform.rotation = rd.rotation;
+            _verticalVelocity = rd.verticalVelocity;
+            _fallTimeoutTimer = rd.fallTimeout;
+            _jumpTimeoutTimer = rd.jumpTimeout;
+            grounded = rd.grounded;
         }
 
         private void CheckInput(out MoveData md)
@@ -240,7 +232,7 @@ namespace Assets.App.Scripts.Character
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
+            _animIDgrounded = Animator.StringToHash("Grounded");
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
@@ -249,43 +241,38 @@ namespace Assets.App.Scripts.Character
         private void GroundedCheck()
         {
             // set sphere position, with offset
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset,
                 transform.position.z);
-            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
+            grounded = Physics.CheckSphere(spherePosition, _controller.radius, groundLayers,
                 QueryTriggerInteraction.Ignore);
 
-            // update animator if using character
             if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDGrounded, Grounded);
-            }
+                _animator.SetBool(_animIDgrounded, grounded);
         }
 
         private void MoveWithData(MoveData md, float delta)
         {
-            // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = md.Sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = moveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is no input, set the target speed to 0
             if (md.Move == Vector2.zero) targetSpeed = 0.0f;
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * speedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            // normalise input direction
             Vector3 inputDirection = new Vector3(md.Move.x, 0.0f, md.Move.y).normalized;
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
             if (md.Move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + md.CameraEulerY;
 
                 // rotate to face input direction relative to camera position
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0.0f, _targetRotation, 0.0f), RotationSmoothTime * delta);
+                transform.rotation = Quaternion.Slerp(transform.rotation, 
+                    Quaternion.Euler(0.0f, _targetRotation, 0.0f),
+                    rotationSmoothSpeed * delta);
             }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
@@ -294,7 +281,6 @@ namespace Assets.App.Scripts.Character
             _controller.Move(targetDirection.normalized * (targetSpeed * delta) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * delta);
 
-            // update animator if using character
             if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
@@ -304,12 +290,10 @@ namespace Assets.App.Scripts.Character
 
         private void JumpAndGravity(MoveData md, float delta)
         {
-            if (Grounded)
+            if (grounded)
             {
-                // reset the fall timeout timer
-                _fallTimeoutDelta = FallTimeout;
+                _fallTimeoutTimer = fallTimeout;
 
-                // update animator if using character
                 if (_hasAnimator)
                 {
                     _animator.SetBool(_animIDJump, false);
@@ -318,53 +302,37 @@ namespace Assets.App.Scripts.Character
 
                 // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
-                {
                     _verticalVelocity = -2f;
-                }
 
-                // Jump
-                if (md.Jump && _jumpTimeoutDelta <= 0.0f)
+                if (md.Jump && _jumpTimeoutTimer <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    _verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-                    // update animator if using character
                     if (_hasAnimator)
-                    {
                         _animator.SetBool(_animIDJump, true);
-                    }
                 }
 
-                // jump timeout
-                if (_jumpTimeoutDelta >= 0.0f)
-                {
-                    _jumpTimeoutDelta -= delta;
-                }
+                if (_jumpTimeoutTimer >= 0.0f)
+                    _jumpTimeoutTimer -= delta;
             }
             else
             {
-                // reset the jump timeout timer
-                _jumpTimeoutDelta = JumpTimeout;
+                _jumpTimeoutTimer = jumpTimeout;
 
-                // fall timeout
-                if (_fallTimeoutDelta >= 0.0f)
-                {
-                    _fallTimeoutDelta -= delta;
-                }
+                if (_fallTimeoutTimer >= 0.0f)
+                    _fallTimeoutTimer -= delta;
                 else
                 {
-                    // update animator if using character
                     if (_hasAnimator)
-                    {
                         _animator.SetBool(_animIDFreeFall, true);
-                    }
                 }
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-            if (_verticalVelocity < _terminalVelocity)
+            if (_verticalVelocity < terminalVelocity)
             {
-                _verticalVelocity += Gravity * delta;
+                _verticalVelocity += gravity * delta;
             }
         }
 
@@ -373,36 +341,36 @@ namespace Assets.App.Scripts.Character
             Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
             Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-            if (Grounded) Gizmos.color = transparentGreen;
+            if (grounded) Gizmos.color = transparentGreen;
             else Gizmos.color = transparentRed;
 
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
-                new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-                GroundedRadius);
+                new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z),
+                _controller.radius);
         }
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
-            if (!base.IsOwner) return;
+            if (!IsOwner) return;
 
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (FootstepAudioClips.Length > 0)
+                if (footstepAudioClips.Length > 0)
                 {
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    var index = Random.Range(0, footstepAudioClips.Length);
+                    AudioSource.PlayClipAtPoint(footstepAudioClips[index], transform.TransformPoint(_controller.center), footstepAudioVolume);
                 }
             }
         }
 
         private void OnLand(AnimationEvent animationEvent)
         {
-            if (!base.IsOwner) return;
+            if (!IsOwner) return;
 
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                AudioSource.PlayClipAtPoint(landingAudioClip, transform.TransformPoint(_controller.center), footstepAudioVolume);
             }
         }
     }
