@@ -12,7 +12,7 @@ using UnityEngine.InputSystem;
 
 namespace Assets.App.Scripts.Character
 {
-    public class PlayerMovementController : NetworkBehaviour
+    public class CharacterMovement : NetworkBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -338,16 +338,19 @@ namespace Assets.App.Scripts.Character
 
         private void OnDrawGizmosSelected()
         {
-            Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-            Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+            if (Application.isPlaying)
+            {
+                Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+                Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-            if (grounded) Gizmos.color = transparentGreen;
-            else Gizmos.color = transparentRed;
+                if (grounded) Gizmos.color = transparentGreen;
+                else Gizmos.color = transparentRed;
 
-            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-            Gizmos.DrawSphere(
-                new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z),
-                _controller.radius);
+                // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+                Gizmos.DrawSphere(
+                    new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z),
+                    _controller.radius);
+            }
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

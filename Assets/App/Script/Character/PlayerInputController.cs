@@ -25,7 +25,6 @@ namespace Assets.App.Scripts.Character
             }
         }
 
-
         private void Awake()
         {
             input = GetComponent<PlayerInput>();

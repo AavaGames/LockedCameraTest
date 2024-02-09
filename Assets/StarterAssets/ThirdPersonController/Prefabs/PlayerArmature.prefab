@@ -1216,20 +1216,14 @@ MonoBehaviour:
   followCameraPrefab: {fileID: 0}
   targetCameraPrefab: {fileID: 0}
   sortingLabel: {fileID: 929105503748531525}
-  sortingType: 1
-  playerHeightOffset: 1.375
-  cameraDistance: 3
-  cameraTarget: {fileID: 0}
+  targetSortingType: 0
+  cameraFollow: {fileID: 0}
   cameraClamp:
     Minimum: -30
     Maximum: 70
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  followCamera: {fileID: 0}
-  targetingCamera: {fileID: 0}
-  _cameraGoalPitch: 0
-  _cameraGoalYaw: 0
-  cameraRotationSpeed: {x: 20, y: 20}
+  cameraFollowingSpeed: {x: 180, y: 180}
 --- !u!95 &6982812146204527121
 Animator:
   serializedVersion: 5

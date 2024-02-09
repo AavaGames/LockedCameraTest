@@ -10,7 +10,7 @@ namespace Assets.App.Script.Character
 {
     public class ReticleController : NetworkBehaviour
     {
-        private PlayerCameraController _playerCameraController;
+        private CharacterCamera _playerCameraController;
 
         [Foldout("Dependencies")]
         public Canvas playerCanvas;
@@ -25,7 +25,7 @@ namespace Assets.App.Script.Character
         // Use this for initialization
         void Awake()
         {
-            _playerCameraController = GetComponent<PlayerCameraController>();
+            _playerCameraController = GetComponent<CharacterCamera>();
 
             playerCanvas.enabled = false;
             reticle.enabled = false;

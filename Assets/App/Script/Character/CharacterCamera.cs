@@ -13,9 +13,9 @@ using Assets.App.Scripts.Character;
 
 namespace Assets.App.Script.Character
 {
-    public class PlayerCameraController : NetworkBehaviour
+    public class CharacterCamera : NetworkBehaviour
     {
-        public enum SortingType { List, Distance }
+        public enum TargetSortingType { List, Distance }
 
         private ReticleController _reticleController;
         private Target _target;
@@ -29,10 +29,7 @@ namespace Assets.App.Script.Character
         public TextMeshProUGUI sortingLabel;
 
         [OnValueChanged("SetTargetingTypeThroughInspector")]
-        public SortingType sortingType;
-        [Tooltip("How high to position the target camera above the player's feet/origin")]
-        public float playerHeightOffset = 1.375f;
-        public float cameraDistance = 3.0f;
+        public TargetSortingType targetSortingType;
 
         private bool _targeting = false;
         public bool Targeting => _targeting;
@@ -47,31 +44,25 @@ namespace Assets.App.Script.Character
         private float _targetFollowLockoutTime = 0.1f;
         private Coroutine _targetFollowLockoutCoroutine;
 
-
         [Header("Cameras")]
-        public GameObject cameraTarget;
+        public GameObject cameraFollow;
         public FloatRange cameraClamp = new FloatRange(-30f, 70f);
         [Tooltip("Additional degrees to override the camera. Useful for fine tuning camera position when locked")]
         public float CameraAngleOverride = 0.0f;
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        public CinemachineVirtualCamera followCamera;
-        public CinemachineVirtualCamera targetingCamera;
+        private CinemachineVirtualCamera _followCamera;
+        private CinemachineVirtualCamera _targetingCamera;
         private CinemachineVirtualCamera _activeCamera;
         public CinemachineVirtualCamera ActiveCamera => _activeCamera;
         private Camera mainCamera;
 
-        [SerializeField]
-        [ReadOnly] 
         private float _cameraGoalPitch;
-        [SerializeField]
-        [ReadOnly]
         private float _cameraGoalYaw;
         private const float LOOK_THRESHOLD = 0.01f;
 
-        public Vector2 cameraRotationSpeed = new Vector2(90, 90);
-
+        public Vector2 cameraFollowingSpeed = new Vector2(180, 180);
 
         void Awake()
         {
@@ -101,14 +92,14 @@ namespace Assets.App.Script.Character
                 _input = GetComponent<PlayerInputController>();
                 mainCamera = Camera.main;
 
-                followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                followCamera.Follow = cameraTarget.transform;
-                targetingCamera = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                targetingCamera.Follow = cameraTarget.transform;
-                ChangeCamera(followCamera);
+                _followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                _followCamera.Follow = cameraFollow.transform;
+                _targetingCamera = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                _targetingCamera.Follow = cameraFollow.transform;
+                ChangeCamera(_followCamera);
 
-                SetCameraRotation(cameraTarget.transform.rotation.eulerAngles.y, cameraTarget.transform.rotation.eulerAngles.x);
-                SetTargetingType(sortingType);
+                SetCameraRotation(cameraFollow.transform.rotation.eulerAngles.y, cameraFollow.transform.rotation.eulerAngles.x);
+                SetTargetingType(targetSortingType);
 
                 _input.actions["Target"].performed += ctx => { ToggleTargeting(); };
                 _input.actions["CycleTargetSorting"].performed += ctx => { CycleTargetSorting(); };
@@ -134,13 +125,13 @@ namespace Assets.App.Script.Character
             CinemachineVirtualCamera cam;
             if (_targeting)
             {
-                cam = targetingCamera;
+                cam = _targetingCamera;
                 _targetFollowLockout = false;
-                _reticleController.Show(sortingType == SortingType.Distance);
+                _reticleController.Show(targetSortingType == TargetSortingType.Distance);
             }
             else
             {
-                cam = followCamera;
+                cam = _followCamera;
                 _reticleController.Hide();
             }
 
@@ -149,10 +140,10 @@ namespace Assets.App.Script.Character
 
         private void CycleTargetSorting()
         {
-            if (sortingType == SortingType.Distance)
-                SetTargetingType(SortingType.List);
+            if (targetSortingType == TargetSortingType.Distance)
+                SetTargetingType(TargetSortingType.List);
             else
-                SetTargetingType(SortingType.Distance);
+                SetTargetingType(TargetSortingType.Distance);
         }
 
         void TimeManager_OnUpdate()
@@ -187,20 +178,20 @@ namespace Assets.App.Script.Character
             }
         }
 
-        public void SetTargetingType(SortingType type)
+        public void SetTargetingType(TargetSortingType type)
         {
             if (_targeting)
             {
-                ChangeCamera(followCamera);
+                ChangeCamera(_followCamera);
                 _targeting = false;
                 _reticleController.Hide();
             }
 
             currentTarget = null;
 
-            sortingType = type;
+            targetSortingType = type;
 
-            sortingLabel.text = sortingType.ToString();
+            sortingLabel.text = targetSortingType.ToString();
         }
 
         /// <summary>
@@ -208,7 +199,7 @@ namespace Assets.App.Script.Character
         /// </summary>
         private void SetTargetingTypeThroughInspector()
         {
-            SetTargetingType(sortingType);
+            SetTargetingType(targetSortingType);
         }    
 
         private void FindTarget(bool forward)
@@ -225,7 +216,7 @@ namespace Assets.App.Script.Character
                 return;
             }
 
-            if (sortingType == SortingType.List)
+            if (targetSortingType == TargetSortingType.List)
             {
                 if (_targetIndex == -1 || currentTarget == null)
                 {
@@ -241,7 +232,7 @@ namespace Assets.App.Script.Character
                     _targetIndex = IntExtension.WrapIndex(index, validTargets.Count);
                 }
             }
-            else if (sortingType == SortingType.Distance)
+            else if (targetSortingType == TargetSortingType.Distance)
             {
                 List<float> distances = new List<float>(validTargets.Count);
                 Vector3 pos = transform.position; // speeds up loop
@@ -317,7 +308,8 @@ namespace Assets.App.Script.Character
                 }
                 else if (_targeting && !_targetFollowLockout)
                 {
-                    var player = new Vector3(transform.position.x, transform.position.y + playerHeightOffset, transform.position.z);
+                    var player = cameraFollow.transform.position;
+                    //new Vector3(transform.position.x, cameraFollow.transform.y, transform.position.z);
                     var target = currentTarget.transform.position;
 
                     var heading = target - player;
@@ -327,14 +319,14 @@ namespace Assets.App.Script.Character
                     var goalRotation = Quaternion.LookRotation(direction).eulerAngles;
 
                     // TODO rework to a kind of tweener that uses easing
-                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraRotationSpeed.x * Time.deltaTime);
-                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraRotationSpeed.y * Time.deltaTime);
+                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraFollowingSpeed.x * Time.deltaTime);
+                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraFollowingSpeed.y * Time.deltaTime);
 
                     SetCameraRotation(pitch, yaw);
                 }
             }
 
-            cameraTarget.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);
+            cameraFollow.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);
         }
 
         private void SetCameraRotation(float pitch, float yaw)

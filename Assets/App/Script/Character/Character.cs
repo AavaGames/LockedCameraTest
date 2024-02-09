@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Assets.App.Script.Character
 {
-    public class PlayerController : NetworkBehaviour
+    public class Character : NetworkBehaviour
     {
         private PlayerInputController _input;
-        private PlayerCameraController _playerCameraController;
+        private CharacterCamera _playerCameraController;
         // motor
 
         private void Awake()
@@ -43,7 +43,7 @@ namespace Assets.App.Script.Character
         {
             base.OnStartNetwork();
 
-            gameObject.name = "Player (" + ObjectId.ToString() + ")";
+            gameObject.name = "Character (" + ObjectId.ToString() + ")";
         }
     }
 }
