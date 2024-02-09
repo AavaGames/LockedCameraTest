@@ -1218,6 +1218,7 @@ MonoBehaviour:
   sortingLabel: {fileID: 929105503748531525}
   targetSortingType: 0
   cameraFollow: {fileID: 0}
+  cameraTargetFollow: {fileID: 0}
   cameraClamp:
     Minimum: -30
     Maximum: 70

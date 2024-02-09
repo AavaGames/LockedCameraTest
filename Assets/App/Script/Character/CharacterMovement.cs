@@ -16,21 +16,16 @@ namespace Assets.App.Scripts.Character
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float moveSpeed = 3.5f;
+        public float moveSpeed = 5.0f;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(10f, 30f)]
         public float rotationSmoothSpeed = 12f;
 
-        [Tooltip("Acceleration and deceleration")]
-        public float speedChangeRate = 10.0f;
-
         [Space(10)]
-        [Tooltip("The height the player can jump")]
-        public float jumpHeight = 1.2f;
-
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float gravity = -15.0f;
+
         public float terminalVelocity = 53.0f;
 
         [Space(10)]
@@ -39,6 +34,11 @@ namespace Assets.App.Scripts.Character
 
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float fallTimeout = 0.15f;
+
+        [Header("Jumping")]
+        public float jumpHeight = 1.2f;
+        public AnimationCurve jumpVelocityCurve;
+        public AnimationCurve jumpMoveSpeedCurve;
 
         [Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Separate from CharacterController built in grounded check")]
@@ -65,7 +65,9 @@ namespace Assets.App.Scripts.Character
         private float _jumpTimeoutTimer;
         private float _fallTimeoutTimer;
 
-        // animation
+        [Header("Animation")]
+        [Tooltip("Rate at which speed animation changes")]
+        public float animSpeedChangeRate = 10.0f;
         private float _animationBlend;
         private int _animIDSpeed;
         private int _animIDgrounded;
@@ -259,7 +261,7 @@ namespace Assets.App.Scripts.Character
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             if (md.Move == Vector2.zero) targetSpeed = 0.0f;
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * speedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * animSpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             Vector3 inputDirection = new Vector3(md.Move.x, 0.0f, md.Move.y).normalized;
