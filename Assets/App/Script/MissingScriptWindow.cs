@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 
+#if UNITY_EDITOR
 public class MissingScriptWindow : EditorWindow
 {
     private static List<string> missingAssets = new List<string>();
@@ -125,3 +126,4 @@ public class MissingScriptWindow : EditorWindow
             missingAssets.Clear();
     }
 }
+#endif

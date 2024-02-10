@@ -1,4 +1,5 @@
-﻿using FishNet.Object;
+﻿using FishNet;
+using FishNet.Object;
 using NaughtyAttributes;
 using System.Collections;
 using TMPro;
@@ -25,11 +26,21 @@ namespace Assets.App.Script.Character
         // Use this for initialization
         void Awake()
         {
+            InstanceFinder.TimeManager.OnLateUpdate += TimeManager_OnLateUpdate;
+
             _playerCameraController = GetComponent<CharacterCamera>();
 
             playerCanvas.enabled = false;
             reticle.enabled = false;
             distanceText.enabled = false;
+        }
+
+        private void OnDestroy()
+        {
+            if (InstanceFinder.TimeManager != null)
+            {
+                InstanceFinder.TimeManager.OnLateUpdate -= TimeManager_OnLateUpdate;
+            }
         }
 
         public override void OnStartClient()
@@ -43,7 +54,7 @@ namespace Assets.App.Script.Character
         }
 
         // Update is called once per frame
-        void LateUpdate()
+        private void TimeManager_OnLateUpdate()
         {
             if (_playerCameraController.Targeting)
             {

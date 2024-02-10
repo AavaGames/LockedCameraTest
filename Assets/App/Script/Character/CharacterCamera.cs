@@ -168,7 +168,6 @@ namespace Assets.App.Script.Character
             if (IsOwner)
             {
 
-
             }
         }
 
@@ -178,6 +177,10 @@ namespace Assets.App.Script.Character
             {
                 if (_targeting)
                 {
+                    // If target disconnects / disappears somehow
+                    if (currentTarget == null)
+                        FindTarget(true);
+
                     _targetDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
                 }
                 else
