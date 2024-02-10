@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: mayan ring
+  m_Shader: {fileID: 4800000, guid: 9b647ab3be248f649ae77e988dff8b8b, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DissolveGuide:
+        m_Texture: {fileID: 2800000, guid: f30a59e1d8c71d144959cf677f995330, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion:
+        m_Texture: {fileID: 2800000, guid: e02a95f4c98d0154fa1f74ceda3f2f04, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionMain:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionMask:
+        m_Texture: {fileID: 2800000, guid: 3559bb7cd9799b8469187593a012d7d5, type: 3}
+        m_Scale: {x: 8, y: 8}
+        m_Offset: {x: 0, y: 0}
+    - _MainNoise:
+        m_Texture: {fileID: 2800000, guid: f30a59e1d8c71d144959cf677f995330, type: 3}
+        m_Scale: {x: -2.73, y: 2.92}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: 07c01d5288da1074d83c71fe5ece1975, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondaryTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blendness: 77.39
+    - _Bloom: 4.84
+    - _Cutoff: 0.5
+    - _DetailStrength: 2.34
+    - _DistMainStrength: 0.02
+    - _DistMaskStrength: 0.05
+    - _DistSecondStrength: 0.3
+    - _DistortionStrength: 0.25
+    - _NoiseAmount: 1.08
+    - __dirty: 0
+    m_Colors:
+    - _DistMainSpeed: {r: 0.3, g: 0.1, b: 0, a: 0}
+    - _DistMaskSpeed: {r: 0.1, g: 0.1, b: 0, a: 0}
+    - _DistortionSpeed: {r: 0.66, g: 0.2, b: 0, a: 0}
+    - _Edge: {r: 1.03, g: 0.985, b: 0, a: 0}
+    - _EdgeColor: {r: 0.82910764, g: 3.3275483, b: 4.2870936, a: 0}
+    - _Front: {r: -0.03, g: 0.12, b: 0, a: 0}
+    - _GlobalOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _HighlightCol: {r: 5.3403134, g: 0.7808948, b: 0.7808948, a: 0}
+    - _Inner: {r: 0.1, g: 0.65, b: 0, a: 0}
+    - _MainColor: {r: 0.15566039, g: 0.41724014, b: 1, a: 0}
+    - _MainTexSpeed: {r: 0.1, g: -0.1, b: 0, a: 0}
+    - _NoiseSpeed: {r: -0.99, g: 0, b: 0, a: 0}
+    - _SecondCol: {r: 3.031433, g: 3.031433, b: 3.031433, a: 0}
+    - _SecondSpeed: {r: 0.01, g: -0.01, b: 0, a: 0}
+    - _StepEdge: {r: 0.95, g: 1, b: 0, a: 0}
+    - _StepHead: {r: 0.1, g: 0.2, b: 0, a: 0}
+    - _StepHighlight: {r: 0.81, g: 1.1, b: 0, a: 0}
+    - _StepLong: {r: 0.1, g: 0.2, b: 0, a: 0}
+    - _StepShort: {r: 0.2, g: 0.8, b: 0, a: 0}
+    - _StepTail: {r: 0.2, g: 0.8, b: 0, a: 0}
+    - _StepTexture: {r: 0.76, g: 1, b: 0, a: 0}
+    - _Tail: {r: 0, g: 0.3, b: 0, a: 0}
+  m_BuildTextureStacks: []
