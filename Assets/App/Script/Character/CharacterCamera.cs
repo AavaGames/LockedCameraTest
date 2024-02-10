@@ -98,6 +98,7 @@ namespace Assets.App.Script.Character
                 mainCamera = Camera.main;
 
                 _followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                _followCamera.name = followCameraPrefab.name;
                 _followCamera.Follow = cameraFollow.transform;
 
 
@@ -106,7 +107,7 @@ namespace Assets.App.Script.Character
                 for (int i = 0; i < TARGETING_CAMERAS; i++)
                 {
                     _targetingCameras[i] = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                    _targetingCameras[i].name = "CharacterTargetCamera " + i.ToString();
+                    _targetingCameras[i].name = targetCameraPrefab.name;
                     _cameraTargetFollows[i] = new GameObject("CameraTargetFollow " + i.ToString());
                     _cameraTargetFollows[i].transform.parent = transform; // parent to character
                     _cameraTargetFollows[i].transform.localPosition = cameraFollow.transform.localPosition;
