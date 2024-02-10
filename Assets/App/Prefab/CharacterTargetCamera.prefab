@@ -110,7 +110,7 @@ MonoBehaviour:
   m_ScreenY: 0.4
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
-  m_SoftZoneWidth: 0.1
+  m_SoftZoneWidth: 0
   m_SoftZoneHeight: 0
   m_BiasX: 0
   m_BiasY: 0

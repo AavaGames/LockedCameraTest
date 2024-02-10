@@ -1629,37 +1629,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3798189404503192547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4781074764244350984
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3761559072274274682}
-  m_Layer: 6
-  m_Name: CameraTargetFollow
-  m_TagString: CinemachineTarget
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3761559072274274682
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4781074764244350984}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5860038406115200381}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4857962553897224242
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,12 +2220,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 54170341162366821}
-  - {fileID: 1508356748671528603}
-  - {fileID: 3761559072274274682}
   - {fileID: 601523878587009455}
   - {fileID: 7249975474517554148}
   - {fileID: 3274072566037244433}
+  - {fileID: 54170341162366821}
+  - {fileID: 1508356748671528603}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6412326309795757311
@@ -2349,7 +2317,6 @@ MonoBehaviour:
   sortingLabel: {fileID: 5747033021053095736}
   targetSortingType: 1
   cameraFollow: {fileID: 1508356748671528604}
-  cameraTargetFollow: {fileID: 4781074764244350984}
   cameraClamp:
     Minimum: -30
     Maximum: 70

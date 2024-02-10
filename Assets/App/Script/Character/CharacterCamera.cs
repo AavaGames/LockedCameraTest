@@ -37,6 +37,7 @@ namespace Assets.App.Script.Character
         private int _targetIndex = -1;
         private Target currentTarget;
         public Target CurrentTarget => currentTarget;
+        private Transform previousTarget; // used for camera transition
         private float _targetDistance = 0f;
         public float TargetDistance => _targetDistance;
 
@@ -46,17 +47,18 @@ namespace Assets.App.Script.Character
 
         [Header("Cameras")]
         public GameObject cameraFollow;
-        public GameObject cameraTargetFollow;
 
         public FloatRange cameraClamp = new FloatRange(-30f, 70f);
         [Tooltip("Additional degrees to override the camera. Useful for fine tuning camera position when locked")]
-        public float CameraAngleOverride = 0.0f;
+        public float cameraAngleOverride = 0.0f;
         [Tooltip("For locking the camera position on all axis")]
-        public bool LockCameraPosition = false;
+        public bool lockCameraPosition = false;
 
         private CinemachineVirtualCamera _followCamera;
         private CinemachineVirtualCamera[] _targetingCameras;
+        private GameObject[] _cameraTargetFollows;
         private int _targetingCameraIndex = 0;
+        private const int TARGETING_CAMERAS = 2;
         private CinemachineVirtualCamera _activeCamera;
         public CinemachineVirtualCamera ActiveCamera => _activeCamera;
         private Camera mainCamera;
@@ -97,12 +99,20 @@ namespace Assets.App.Script.Character
 
                 _followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
                 _followCamera.Follow = cameraFollow.transform;
-                _targetingCameras = new CinemachineVirtualCamera[2];
-                _targetingCameras[0] = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                _targetingCameras[1] = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                _targetingCameras[0].Follow = cameraTargetFollow.transform;
-                _targetingCameras[1].Follow = cameraTargetFollow.transform;
 
+
+                _targetingCameras = new CinemachineVirtualCamera[TARGETING_CAMERAS];
+                _cameraTargetFollows = new GameObject[TARGETING_CAMERAS];
+                for (int i = 0; i < TARGETING_CAMERAS; i++)
+                {
+                    _targetingCameras[i] = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                    _targetingCameras[i].name = "CharacterTargetCamera " + i.ToString();
+                    _cameraTargetFollows[i] = new GameObject("CameraTargetFollow " + i.ToString());
+                    _cameraTargetFollows[i].transform.parent = transform; // parent to character
+                    _cameraTargetFollows[i].transform.localPosition = cameraFollow.transform.localPosition;
+                    _targetingCameras[i].Follow = _cameraTargetFollows[i].transform;
+                }
+              
                 ChangeCamera(_followCamera);
 
                 SetCameraRotation(cameraFollow.transform.rotation.eulerAngles.y, cameraFollow.transform.rotation.eulerAngles.x);
@@ -277,6 +287,8 @@ namespace Assets.App.Script.Character
                 _targetIndex = originalDistances.IndexOf(distances[index]);
             }
 
+            if (currentTarget != null)
+                previousTarget = currentTarget.transform;
             currentTarget = validTargets[_targetIndex];
             _targetingCameraIndex = IntExtension.WrapIndex(_targetingCameraIndex + 1, _targetingCameras.Length);
             _targetingCameras[_targetingCameraIndex].LookAt = currentTarget.transform;
@@ -299,49 +311,40 @@ namespace Assets.App.Script.Character
 
         private void CameraRotation()
         {
-            if (Cursor.lockState == CursorLockMode.Locked)
+            if (Cursor.lockState == CursorLockMode.Locked && !lockCameraPosition)
             {
-                // if there is an input and camera position is not fixed
-                if (_input.look.sqrMagnitude >= LOOK_THRESHOLD && !LockCameraPosition)
+                if (_input.look.sqrMagnitude >= LOOK_THRESHOLD)
                 {
                     if (_targetFollowLockoutCoroutine != null)
                         StopCoroutine(_targetFollowLockoutCoroutine);
                     _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
 
-                    ChangeCamera(_followCamera);
-
-                    //Don't multiply mouse input by Time.deltaTime;
-                    float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                    // Controller doesnt seem to need delta either
+                    //float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
                     float pitch = _cameraGoalPitch + _input.look.y;
                     float yaw = _cameraGoalYaw + _input.look.x;
                     SetCameraRotation(pitch, yaw);
+
+                    ChangeCamera(_followCamera);
                 }
                 else if (_targeting && !_targetFollowLockout)
                 {
-                    var player = cameraFollow.transform.position;
-                    //new Vector3(transform.position.x, cameraFollow.transform.y, transform.position.z);
-                    var target = currentTarget.transform.position;
 
-                    var heading = target - player;
-                    var distance = heading.magnitude;
-                    var direction = heading / distance;
+                    if (previousTarget != null)
+                        _cameraTargetFollows[IntExtension.WrapIndex(_targetingCameraIndex + 1, TARGETING_CAMERAS)].transform.LookAt(previousTarget);
+                    _cameraTargetFollows[_targetingCameraIndex].transform.LookAt(currentTarget.transform);
 
-                    var goalRotation = Quaternion.LookRotation(direction).eulerAngles;
-
-                    cameraTargetFollow.transform.LookAt(currentTarget.transform);
-                    ChangeCamera(_targetingCameras[_targetingCameraIndex]);
-
-
-                    // TODO rework to a kind of tweener that uses easing
-                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, goalRotation.x, cameraFollowingSpeed.x * Time.deltaTime);
-                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, goalRotation.y, cameraFollowingSpeed.y * Time.deltaTime);
-
+                    // Smooth follow camera to target camera
+                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.x, cameraFollowingSpeed.x * Time.deltaTime);
+                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.y, cameraFollowingSpeed.y * Time.deltaTime);
                     SetCameraRotation(pitch, yaw);
+
+                    ChangeCamera(_targetingCameras[_targetingCameraIndex]);
                 }
             }
 
-            cameraFollow.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);
+            cameraFollow.transform.rotation = Quaternion.Euler(_cameraGoalPitch + cameraAngleOverride, _cameraGoalYaw, 0.0f);
         }
 
         private void SetCameraRotation(float pitch, float yaw)
@@ -352,7 +355,6 @@ namespace Assets.App.Script.Character
             _cameraGoalPitch = pitch;
             _cameraGoalYaw = yaw;
 
-            // only when manual?
             _cameraGoalPitch = ClampAngle(_cameraGoalPitch, cameraClamp.Minimum, cameraClamp.Maximum);
             _cameraGoalYaw = ClampAngle(_cameraGoalYaw, float.MinValue, float.MaxValue);
         }

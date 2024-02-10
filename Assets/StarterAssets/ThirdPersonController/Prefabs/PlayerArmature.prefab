@@ -1218,12 +1218,11 @@ MonoBehaviour:
   sortingLabel: {fileID: 929105503748531525}
   targetSortingType: 0
   cameraFollow: {fileID: 0}
-  cameraTargetFollow: {fileID: 0}
   cameraClamp:
     Minimum: -30
     Maximum: 70
-  CameraAngleOverride: 0
-  LockCameraPosition: 0
+  cameraAngleOverride: 0
+  lockCameraPosition: 0
   cameraFollowingSpeed: {x: 180, y: 180}
 --- !u!95 &6982812146204527121
 Animator:
