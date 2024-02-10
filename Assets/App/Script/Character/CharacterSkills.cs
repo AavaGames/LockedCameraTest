@@ -93,7 +93,7 @@ namespace Assets.App.Script.Character
             {
                 canAttack = false;
 
-                Debug.Log("Executing Attack local");
+                Debug.Log("Executing attack local");
 
                 // Face target
                 if (_character.camera.Targeting && _character.camera.CurrentTarget != null)
@@ -102,11 +102,20 @@ namespace Assets.App.Script.Character
                     transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
                 }
 
-                RPCExecuteAttack();
+                // playing the animation
+                int currentSkillID = skillLibrary.skills.FindIndex(a => a.attackName.Contains(skillNorth.attackName));
+                _animator.CrossFade(skillLibrary.skills[currentSkillID].attackAnimation, 0.1f, -1);
+
+                _character.movement.Deactivate();
+
+                if (IsOwner)
+                {
+                    RPCExecuteAttack();
+                }
             }
         }
 
-        [ObserversRpc]
+        [ObserversRpc(ExcludeOwner = true)]
         public void RPCExecuteAttack()
         {
             Debug.Log(gameObject.name + " is executing attack");
