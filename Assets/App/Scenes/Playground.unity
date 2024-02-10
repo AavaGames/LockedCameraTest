@@ -665,6 +665,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5f4daf24146ee040b5a2d7a73b30aa0, type: 3}
+--- !u!1 &1264742086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1264742087}
+  m_Layer: 0
+  m_Name: SpawnPoint (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1264742087
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264742086}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.75, y: 0, z: -1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1285749567
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1000,6 +1031,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5f4daf24146ee040b5a2d7a73b30aa0, type: 3}
+--- !u!1 &1731165830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1731165831}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1731165831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731165830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1782115000 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8718778828885884488, guid: e5f4daf24146ee040b5a2d7a73b30aa0,
@@ -1260,6 +1322,37 @@ MonoBehaviour:
   targetManager: {fileID: 0}
   team: -1
   hasNewTargets: 1
+--- !u!1 &1921471912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1921471913}
+  m_Layer: 0
+  m_Name: SpawnPoint (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1921471913
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921471912}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.5, y: 0, z: -1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1925473244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1924,7 +2017,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
 --- !u!224 &1448865551383874862
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1981,7 +2074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3606bfdac5a4743890fc1a5ecd8f24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _autoStartType: 1
+  _autoStartType: 0
   _stoppedColor: {r: 0.25490198, g: 0.25490198, b: 0.25490198, a: 1}
   _changingColor: {r: 0.78431374, g: 0.6862745, b: 0, a: 1}
   _startedColor: {r: 0, g: 0.5882353, b: 0.64705884, a: 1}
@@ -2098,7 +2191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2c95dfde7d73b54dbbdc23155d35d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _refreshDefaultPrefabs: 0
+  _refreshDefaultPrefabs: 1
   _runInBackground: 1
   _dontDestroyOnLoad: 1
   _objectPool: {fileID: 0}
@@ -2154,7 +2247,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 1428437583, guid: 2dcb1633a910ee04a866a46282eac209, type: 3}
   _addToDefaultScene: 1
-  Spawns: []
+  Spawns:
+  - {fileID: 1731165831}
+  - {fileID: 1264742087}
+  - {fileID: 1921471913}
 --- !u!114 &5737828691931263263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2240,3 +2336,6 @@ SceneRoots:
   - {fileID: 5737828691931263251}
   - {fileID: 1638703306}
   - {fileID: 2083541980}
+  - {fileID: 1731165831}
+  - {fileID: 1264742087}
+  - {fileID: 1921471913}

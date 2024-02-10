@@ -10,6 +10,8 @@ using NaughtyAttributes;
 using Assets.App.Script.Extensions;
 using Assets.App.Script.Combat;
 using Assets.App.Scripts.Character;
+using System;
+using UnityEngine.InputSystem;
 
 namespace Assets.App.Script.Character
 {
@@ -69,6 +71,12 @@ namespace Assets.App.Script.Character
 
         public Vector2 cameraFollowingSpeed = new Vector2(180, 180);
 
+        private Action<InputAction.CallbackContext> targetAction;
+        private Action<InputAction.CallbackContext> cycleTargetSortingAction;
+        private Action<InputAction.CallbackContext> nextTargetAction;
+        private Action<InputAction.CallbackContext> previousTargetAction;
+
+
         void Awake()
         {
             InstanceFinder.TimeManager.OnUpdate += TimeManager_OnUpdate;
@@ -84,6 +92,9 @@ namespace Assets.App.Script.Character
                 InstanceFinder.TimeManager.OnUpdate -= TimeManager_OnUpdate;
                 InstanceFinder.TimeManager.OnLateUpdate -= TimeManager_OnLateUpdate;
             }
+
+
+            
         }
 
         public override void OnStartClient()
@@ -120,12 +131,34 @@ namespace Assets.App.Script.Character
                 SetCameraRotation(cameraFollow.transform.rotation.eulerAngles.y, cameraFollow.transform.rotation.eulerAngles.x);
                 SetTargetingType(targetSortingType);
 
-                _input.actions["Target"].performed += ctx => { ToggleTargeting(); };
-                _input.actions["CycleTargetSorting"].performed += ctx => { CycleTargetSorting(); };
-                _input.actions["NextTarget"].performed += ctx => { FindTarget(true); };
-                _input.actions["PreviousTarget"].performed += ctx => { FindTarget(false); };
+                targetAction = ctx => ToggleTargeting();
+                cycleTargetSortingAction = ctx => CycleTargetSorting();
+                nextTargetAction = ctx => FindTarget(true);
+                previousTargetAction = ctx => FindTarget(false);
+
+                _input.actions["Target"].performed += targetAction;
+                _input.actions["CycleTargetSorting"].performed += cycleTargetSortingAction;
+                _input.actions["NextTarget"].performed += nextTargetAction;
+                _input.actions["PreviousTarget"].performed += previousTargetAction;
 
                 gameObject.SetActive(true);
+            }
+        }
+
+        public override void OnStopClient()
+        {
+            base.OnStopClient(); 
+
+            if (IsOwner)
+            {
+                _input.actions["Target"].performed -= targetAction;
+                _input.actions["CycleTargetSorting"].performed -= cycleTargetSortingAction;
+                _input.actions["NextTarget"].performed -= nextTargetAction;
+                _input.actions["PreviousTarget"].performed -= previousTargetAction;
+
+                Destroy(_followCamera.gameObject);
+                foreach (var obj in _targetingCameras) Destroy(obj.gameObject);
+                foreach (var obj in _cameraTargetFollows) Destroy(obj.gameObject);
             }
         }
 

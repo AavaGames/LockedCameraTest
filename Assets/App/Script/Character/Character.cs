@@ -8,26 +8,30 @@ namespace Assets.App.Script.Character
 {
     public class Character : NetworkBehaviour
     {
-        private PlayerInputController _input;
-        private CharacterCamera _playerCameraController;
-        // motor
+        public PlayerInputController input { get; private set; }
+        new public CharacterCamera camera { get; private set; }
+        public CharacterMovement movement { get; private set; }
+        public CharacterSkills skills { get; private set; }
+
 
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            _input = GetComponent<PlayerInputController>();
+            input = GetComponent<PlayerInputController>();
+            camera = GetComponent<CharacterCamera>();
+            movement = GetComponent<CharacterMovement>();
         }
 
         private void Update()
         {
             if (IsOwner)
             {
-                if (_input.actions["Pause"].WasPressedThisFrame())
+                if (input.actions["Pause"].WasPressedThisFrame())
                 {
                     Cursor.lockState = CursorLockMode.None;
                 }
-                else if (Input.GetMouseButtonDown(0))
+                else if (Input.GetMouseButtonDown(1))
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                 }

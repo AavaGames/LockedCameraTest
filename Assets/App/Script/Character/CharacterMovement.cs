@@ -15,6 +15,8 @@ namespace Assets.App.Scripts.Character
     public class CharacterMovement : NetworkBehaviour
     {
         [Header("Player")]
+        public bool active = true;
+
         [Tooltip("Move speed of the character in m/s")]
         public float moveSpeed = 5.0f;
 
@@ -82,16 +84,18 @@ namespace Assets.App.Scripts.Character
 
         private bool _hasAnimator;
 
+
+
         //MoveData for client simulation
         private MoveData _clientMoveData;
 
         //MoveData for replication
         public struct MoveData : IReplicateData
         {
-            public Vector2 Move;
-            public bool Jump;
-            public float CameraEulerY;
-            public bool Sprint;
+            public bool active;
+            public Vector2 move;
+            public bool jump;
+            public float cameraEulerY;
 
             public void Dispose() { }
             private uint _tick;
@@ -169,6 +173,8 @@ namespace Assets.App.Scripts.Character
             _jumpTimeoutTimer = jumpTimeout;
         }
 
+        #region Update
+
         private void TimeManager_OnTick()
         {
             if (IsOwner)
@@ -211,11 +217,11 @@ namespace Assets.App.Scripts.Character
         {
             md = new MoveData()
             {
-                Move = _input.move,
-                Jump = _input.actions["MovementAbility"].IsPressed(),
-                CameraEulerY = _mainCamera.transform.eulerAngles.y,
-                Sprint = _input.actions["Sprint"].IsPressed(),
+                move = _input.move,
+                jump = _input.actions["MovementAbility"].IsPressed(),
+                cameraEulerY = _mainCamera.transform.eulerAngles.y,
             };
+            md.active = active;
         }
 
         [Replicate]
@@ -229,6 +235,18 @@ namespace Assets.App.Scripts.Character
             }
             else if (!asServer)
                 _clientMoveData = md;
+        }
+
+        #endregion
+
+        public void Activate()
+        {
+            active = true;
+        }
+
+        public void Deactivate()
+        {
+            active = false;
         }
 
         private void AssignAnimationIDs()
@@ -259,29 +277,32 @@ namespace Assets.App.Scripts.Character
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            if (md.Move == Vector2.zero) targetSpeed = 0.0f;
+            if (md.move == Vector2.zero) targetSpeed = 0.0f;
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * animSpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            Vector3 inputDirection = new Vector3(md.Move.x, 0.0f, md.Move.y).normalized;
-
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            if (md.Move != Vector2.zero)
+            if (md.active)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + md.CameraEulerY;
+                Vector3 inputDirection = new Vector3(md.move.x, 0.0f, md.move.y).normalized;
 
-                // rotate to face input direction relative to camera position
-                transform.rotation = Quaternion.Slerp(transform.rotation, 
-                    Quaternion.Euler(0.0f, _targetRotation, 0.0f),
-                    rotationSmoothSpeed * delta);
+                // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                if (md.move != Vector2.zero)
+                {
+                    _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + md.cameraEulerY;
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Slerp(transform.rotation,
+                        Quaternion.Euler(0.0f, _targetRotation, 0.0f),
+                        rotationSmoothSpeed * delta);
+                }
+
+                Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+                // move the player
+                _controller.Move(targetDirection.normalized * (targetSpeed * delta) +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * delta);
             }
-
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-
-            // move the player
-            _controller.Move(targetDirection.normalized * (targetSpeed * delta) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * delta);
 
             if (_hasAnimator)
             {
@@ -306,7 +327,7 @@ namespace Assets.App.Scripts.Character
                 if (_verticalVelocity < 0.0f)
                     _verticalVelocity = -2f;
 
-                if (md.Jump && _jumpTimeoutTimer <= 0.0f)
+                if (md.jump && _jumpTimeoutTimer <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
@@ -355,6 +376,8 @@ namespace Assets.App.Scripts.Character
             }
         }
 
+        #region Animation Events
+
         private void OnFootstep(AnimationEvent animationEvent)
         {
             if (!IsOwner) return;
@@ -378,5 +401,6 @@ namespace Assets.App.Scripts.Character
                 AudioSource.PlayClipAtPoint(landingAudioClip, transform.TransformPoint(_controller.center), footstepAudioVolume);
             }
         }
+        #endregion
     }
 }
