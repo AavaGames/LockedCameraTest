@@ -97,6 +97,7 @@ namespace Assets.App.Script.Character
                 _input = GetComponent<PlayerInputController>();
                 mainCamera = Camera.main;
 
+                // Camera names are important for cinemachine blender settings
                 _followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
                 _followCamera.name = followCameraPrefab.name;
                 _followCamera.Follow = cameraFollow.transform;
