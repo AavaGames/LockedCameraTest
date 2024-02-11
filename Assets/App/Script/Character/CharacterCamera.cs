@@ -349,24 +349,28 @@ namespace Assets.App.Script.Character
 
         private void CameraRotation()
         {
-            if (Cursor.lockState == CursorLockMode.Locked && !lockCameraPosition)
+            if (!lockCameraPosition)
             {
-                if (_input.look.sqrMagnitude >= LOOK_THRESHOLD)
+                if (Cursor.lockState == CursorLockMode.Locked)
                 {
-                    if (_targetFollowLockoutCoroutine != null)
-                        StopCoroutine(_targetFollowLockoutCoroutine);
-                    _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
+                    if (_input.look.sqrMagnitude >= LOOK_THRESHOLD)
+                    {
+                        if (_targetFollowLockoutCoroutine != null)
+                            StopCoroutine(_targetFollowLockoutCoroutine);
+                        _targetFollowLockoutCoroutine = StartCoroutine(TargetFollowLockout());
 
-                    // Controller doesnt seem to need delta either
-                    //float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                        // Controller doesnt seem to need delta either
+                        //float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                    float pitch = _cameraGoalPitch + _input.look.y;
-                    float yaw = _cameraGoalYaw + _input.look.x;
-                    SetCameraRotation(pitch, yaw);
+                        float pitch = _cameraGoalPitch + _input.look.y;
+                        float yaw = _cameraGoalYaw + _input.look.x;
+                        SetCameraRotation(pitch, yaw);
 
-                    ChangeCamera(_followCamera);
+                        ChangeCamera(_followCamera);
+                    }
                 }
-                else if (_targeting && !_targetFollowLockout)
+
+                if (_targeting && !_targetFollowLockout)
                 {
 
                     if (previousTarget != null)

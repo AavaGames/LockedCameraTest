@@ -1,5 +1,6 @@
 ﻿using Assets.App.Scripts.Character;
 using FishNet;
+using FishNet.Component.Animating;
 using FishNet.Object;
 using NaughtyAttributes;
 using System;
@@ -15,6 +16,7 @@ namespace Assets.App.Script.Character
     {
         private Character _character;
         private Animator _animator;
+        private NetworkAnimator _networkAnimator;
         private PlayerInputController _input;
 
         private bool canAttack = true;
@@ -37,6 +39,7 @@ namespace Assets.App.Script.Character
             _character = GetComponent<Character>();
             _animator = GetComponent<Animator>();
             _input = GetComponent<PlayerInputController>();
+            _networkAnimator = GetComponent<NetworkAnimator>();
 
             NextSkill();
         }
@@ -87,6 +90,7 @@ namespace Assets.App.Script.Character
             // execute
         }
 
+        [Client]
         public void ExecuteAttack()
         {
             if (canAttack)
@@ -104,25 +108,25 @@ namespace Assets.App.Script.Character
 
                 // playing the animation
                 int currentSkillID = skillLibrary.skills.FindIndex(a => a.attackName.Contains(skillNorth.attackName));
-                _animator.CrossFade(skillLibrary.skills[currentSkillID].attackAnimation, 0.1f, -1);
+                AttackClass attack = skillLibrary.skills[currentSkillID];
+                _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
 
                 _character.movement.Deactivate();
 
                 if (IsOwner)
                 {
-                    RPCExecuteAttack();
+                    RPCExecuteAttack(attack);
                 }
             }
         }
 
-        [ObserversRpc(ExcludeOwner = true)]
-        public void RPCExecuteAttack()
+        [ServerRpc]
+        public void RPCExecuteAttack(AttackClass attack)
         {
             Debug.Log(gameObject.name + " is executing attack");
 
             // playing the animation
-            int currentSkillID = skillLibrary.skills.FindIndex(a => a.attackName.Contains(skillNorth.attackName));
-            _animator.CrossFade(skillLibrary.skills[currentSkillID].attackAnimation, 0.1f, -1);
+            _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
 
             _character.movement.Deactivate();
         }
@@ -130,14 +134,23 @@ namespace Assets.App.Script.Character
         // animation event object spawn
         public void SpawnObjectLocal(GameObject spawnedObj)
         {
-            GameObject currentObj = Instantiate(spawnedObj, transform, false);
+            if (IsServer)
+            {
+                GameObject currentObj = Instantiate(spawnedObj, transform, false);
+                Spawn(currentObj, LocalConnection);
+                // NOTE not totally sure if this is giving ownership to the caller or to every client
+            }
         }
         
         // animation event object spawn world space
         public void SpawnObjectGlobal(GameObject spawnedObj)
         {
-            GameObject currentObj = Instantiate(spawnedObj, transform, false);
-            currentObj.transform.parent = null;
+            if (IsServer)
+            {
+                GameObject currentObj = Instantiate(spawnedObj, transform, false);
+                currentObj.transform.parent = null;
+                Spawn(currentObj, LocalConnection);
+            }
         }
 
         public void UpdateAttack()

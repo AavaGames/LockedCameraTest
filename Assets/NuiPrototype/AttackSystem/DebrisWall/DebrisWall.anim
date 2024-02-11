@@ -37104,14 +37104,8 @@ AnimationClip:
   - time: 0.26666668
     functionName: SpawnObjectLocal
     data: 
-    objectReferenceParameter: {fileID: 4740512293727613328, guid: 303325f7548435445a174920155286ac, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.26666668
-    functionName: SpawnObjectLocal
-    data: 
-    objectReferenceParameter: {fileID: 5744668310775622292, guid: 3e77c0e15f7443344ba6eff37a6eb6f1, type: 3}
+    objectReferenceParameter: {fileID: 5744668310775622292, guid: 3e77c0e15f7443344ba6eff37a6eb6f1,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

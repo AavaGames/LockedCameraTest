@@ -1,13 +1,25 @@
+using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSelfDestroy : MonoBehaviour
+public class ObjectSelfDestroy : NetworkBehaviour
 {
     public float destroyAfter = 5;
-    // Start is called before the first frame update
-    void Start()
+
+    public override void OnStartClient()
     {
-        Destroy(gameObject, destroyAfter);
+        base.OnStartClient();
+
+        if (IsServer)
+        {
+            StartCoroutine(DespawnAfter());
+        }
+    }
+
+    IEnumerator DespawnAfter()
+    {
+        yield return new WaitForSeconds(destroyAfter);
+        Despawn(DespawnType.Destroy);
     }
 }

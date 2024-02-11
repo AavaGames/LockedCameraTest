@@ -4959,6 +4959,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7697018871385252034}
   - component: {fileID: 9178703516224490382}
+  - component: {fileID: 6503493121665876826}
   m_Layer: 0
   m_Name: DebrisWallVFX
   m_TagString: Untagged
@@ -4980,6 +4981,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1518385620400434628}
+  - {fileID: 8408195902306115164}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9178703516224490382
@@ -4995,3 +4997,109 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyAfter: 2
+--- !u!114 &6503493121665876826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5744668310775622292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  _networkBehaviours: []
+  <ParentNetworkObject>k__BackingField: {fileID: 0}
+  <ChildNetworkObjects>k__BackingField: []
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 2, y: 2, z: 2}
+  _isNetworked: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  <PrefabId>k__BackingField: 0
+  <SpawnableCollectionId>k__BackingField: 0
+  _scenePathHash: 0
+  <SceneId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 15483131617713649672
+--- !u!1001 &7238826144990964559
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7697018871385252034}
+    m_Modifications:
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.133
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740512293727613328, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: m_Name
+      value: DebrisWallHitbox
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 303325f7548435445a174920155286ac, type: 3}
+--- !u!4 &8408195902306115164 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
+    type: 3}
+  m_PrefabInstance: {fileID: 7238826144990964559}
+  m_PrefabAsset: {fileID: 0}

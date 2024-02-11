@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1214445336012453139}
   - component: {fileID: 8200790605645424306}
   - component: {fileID: 1429323443355042876}
+  - component: {fileID: -1632469737118943452}
   m_Layer: 0
   m_Name: BubbleShieldHitbox
   m_TagString: Untagged
@@ -25,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4740512293727613328}
+  serializedVersion: 2
   m_LocalRotation: {x: 0.8220219, y: -0.35144764, z: 0.4210493, w: 0.1532386}
   m_LocalPosition: {x: -0.133, y: 0.34, z: 0.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 33.222, y: -224.324, z: -147.559}
 --- !u!136 &8200790605645424306
 CapsuleCollider:
@@ -68,4 +69,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fcf2127c859234ba881fde7cfc0827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: -1632469737118943452}
+  _networkObjectCache: {fileID: -1632469737118943452}
   destroyAfter: 0.5
+--- !u!114 &-1632469737118943452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740512293727613328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  _networkBehaviours:
+  - {fileID: 1429323443355042876}
+  <ParentNetworkObject>k__BackingField: {fileID: 0}
+  <ChildNetworkObjects>k__BackingField: []
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    LocalScale: {x: 0, y: 0, z: 0}
+  _isNetworked: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _defaultDespawnType: 0
+  NetworkObserver: {fileID: 0}
+  <PrefabId>k__BackingField: 1
+  <SpawnableCollectionId>k__BackingField: 0
+  _scenePathHash: 0
+  <SceneId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 3667441959682873554
