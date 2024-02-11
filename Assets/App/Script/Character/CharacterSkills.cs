@@ -111,6 +111,7 @@ namespace Assets.App.Script.Character
                 // playing the animation
                 AttackClass attack = skillNorth;
 
+
                 _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
 
                 _character.movement.Deactivate();
@@ -126,6 +127,9 @@ namespace Assets.App.Script.Character
             Debug.Log(gameObject.name + " is executing attack");
             
             // playing the animation
+            //Debug.Log("Playing")
+            //if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == attack.attackAnimation)
+            //    return;
 
             // on non-host client, other players get stuck on this animation as if it was paused
             _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0); 
@@ -137,22 +141,24 @@ namespace Assets.App.Script.Character
         }
 
         // animation event object spawn
-        [ServerRpc]
         public void SpawnObjectLocal(GameObject spawnedObj)
         {
-
-            GameObject currentObj = Instantiate(spawnedObj, transform, false);
-            Spawn(currentObj, LocalConnection);
-            // NOTE not totally sure if this is giving ownership to the caller or to every client
+            if (IsServer)
+            {
+                GameObject currentObj = Instantiate(spawnedObj, transform, false);
+                Spawn(currentObj, LocalConnection);
+                // NOTE not totally sure if this is giving ownership to the caller or to every client
+            }
         }
 
-        [ServerRpc]
         public void SpawnObjectGlobal(GameObject spawnedObj)
         {
-
-            GameObject currentObj = Instantiate(spawnedObj, transform, false);
-            currentObj.transform.parent = null;
-            Spawn(currentObj, LocalConnection);
+            if (IsServer)
+            {
+                GameObject currentObj = Instantiate(spawnedObj, transform, false);
+                currentObj.transform.parent = null;
+                Spawn(currentObj, LocalConnection);
+            }
         }
 
         public void UpdateAttack()
