@@ -156,7 +156,8 @@ namespace Assets.App.Script.Character
                 _input.actions["NextTarget"].performed -= nextTargetAction;
                 _input.actions["PreviousTarget"].performed -= previousTargetAction;
 
-                Destroy(_followCamera.gameObject);
+                if (_followCamera != null)
+                    Destroy(_followCamera.gameObject);
                 foreach (var obj in _targetingCameras) Destroy(obj.gameObject);
                 foreach (var obj in _cameraTargetFollows) Destroy(obj.gameObject);
             }

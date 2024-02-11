@@ -102,8 +102,10 @@ namespace Assets.App.Script.Character
                 // Face target
                 if (_character.camera.Targeting && _character.camera.CurrentTarget != null)
                 {
-                    transform.LookAt(_character.camera.CurrentTarget.transform);
-                    transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
+                    Vector3 dir = transform.position - _character.camera.CurrentTarget.transform.position;
+                    dir = dir.normalized;
+                    float rotation = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.Euler(0, rotation - 180, 0);
                 }
 
                 // playing the animation
