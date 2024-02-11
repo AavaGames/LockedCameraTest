@@ -37102,7 +37102,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.26666668
-    functionName: SpawnObjectLocal
+    functionName: SpawnObjectGlobal
     data: 
     objectReferenceParameter: {fileID: 5744668310775622292, guid: 3e77c0e15f7443344ba6eff37a6eb6f1,
       type: 3}

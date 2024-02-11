@@ -991,9 +991,8 @@ GameObject:
   - component: {fileID: 3176412614883773830}
   - component: {fileID: 5387830731026041219}
   - component: {fileID: 6492177789537802187}
-  - component: {fileID: 554828090469603079}
   - component: {fileID: 6492177789537802189}
-  - component: {fileID: 3961116077872594231}
+  - component: {fileID: 554828090469603079}
   - component: {fileID: 1428437583}
   - component: {fileID: 4868597864645184612}
   - component: {fileID: 4520246718899596234}
@@ -1272,27 +1271,6 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!95 &554828090469603079
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6492177789537802183}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 9a3b7827c77d5d343b79f7ae2e95e468, type: 3}
-  m_Controller: {fileID: 9100000, guid: 0342ee6568eb8064abe5b1fcfe1a29dc, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!143 &6492177789537802189
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1319,23 +1297,27 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
---- !u!114 &3961116077872594231
-MonoBehaviour:
+--- !u!95 &554828090469603079
+Animator:
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6492177789537802183}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909d917d73a63f940ac158d02e936645, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pushLayers:
-    serializedVersion: 2
-    m_Bits: 1
-  canPush: 1
-  strength: 1.1
+  m_Avatar: {fileID: 9000000, guid: 9a3b7827c77d5d343b79f7ae2e95e468, type: 3}
+  m_Controller: {fileID: 9100000, guid: 0342ee6568eb8064abe5b1fcfe1a29dc, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1428437583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1372,7 +1354,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 3
+  <PrefabId>k__BackingField: 6
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -1482,7 +1464,7 @@ MonoBehaviour:
   IgnoredParameters: []
   _animator: {fileID: 554828090469603079}
   _smoothFloats: 1
-  _interpolation: 2
+  _interpolation: 1
   _clientAuthoritative: 0
   _sendToOwner: 0
 --- !u!1 &8284040399681296792
@@ -2269,7 +2251,7 @@ PrefabInstance:
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}
@@ -2289,17 +2271,17 @@ PrefabInstance:
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2981842929394656719, guid: c955c941d66a79243af45901e567caac,
         type: 3}

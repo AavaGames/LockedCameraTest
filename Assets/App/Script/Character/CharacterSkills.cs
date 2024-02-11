@@ -109,16 +109,14 @@ namespace Assets.App.Script.Character
                 }
 
                 // playing the animation
-                int currentSkillID = skillLibrary.skills.FindIndex(a => a.attackName.Contains(skillNorth.attackName));
-                AttackClass attack = skillLibrary.skills[currentSkillID];
+                AttackClass attack = skillNorth;
+
                 _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
 
                 _character.movement.Deactivate();
 
-                if (IsOwner)
-                {
-                    RPCExecuteAttack(attack);
-                }
+                // Update server with animation + movement
+                RPCExecuteAttack(attack);
             }
         }
 
@@ -126,33 +124,35 @@ namespace Assets.App.Script.Character
         public void RPCExecuteAttack(AttackClass attack)
         {
             Debug.Log(gameObject.name + " is executing attack");
-
+            
             // playing the animation
-            _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
+
+            // on non-host client, other players get stuck on this animation as if it was paused
+            _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0); 
+
+            // 1. SEE IF THIS IS CALLED MULTIPLE TIME
+            // 2. LOOK INTO ANIMATION BEHAVIORS FOR ONSTATEENTERED
 
             _character.movement.Deactivate();
         }
 
         // animation event object spawn
+        [ServerRpc]
         public void SpawnObjectLocal(GameObject spawnedObj)
         {
-            if (IsServer)
-            {
-                GameObject currentObj = Instantiate(spawnedObj, transform, false);
-                Spawn(currentObj, LocalConnection);
-                // NOTE not totally sure if this is giving ownership to the caller or to every client
-            }
+
+            GameObject currentObj = Instantiate(spawnedObj, transform, false);
+            Spawn(currentObj, LocalConnection);
+            // NOTE not totally sure if this is giving ownership to the caller or to every client
         }
-        
-        // animation event object spawn world space
+
+        [ServerRpc]
         public void SpawnObjectGlobal(GameObject spawnedObj)
         {
-            if (IsServer)
-            {
-                GameObject currentObj = Instantiate(spawnedObj, transform, false);
-                currentObj.transform.parent = null;
-                Spawn(currentObj, LocalConnection);
-            }
+
+            GameObject currentObj = Instantiate(spawnedObj, transform, false);
+            currentObj.transform.parent = null;
+            Spawn(currentObj, LocalConnection);
         }
 
         public void UpdateAttack()
