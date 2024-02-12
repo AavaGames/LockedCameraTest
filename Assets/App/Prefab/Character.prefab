@@ -1078,7 +1078,7 @@ MonoBehaviour:
   RotationSmoothSpeed: 12
   Gravity: -15
   TerminalVelocity: 53
-  JumpTimeout: 0.5
+  JumpTimeout: 0
   FallTimeout: 0.15
   JumpHeight: 2
   Grounded: 1
