@@ -22,7 +22,7 @@ namespace Assets.App.Scripts.Utility
         IEnumerator DespawnAfter()
         {
             yield return new WaitForSeconds(destroyAfter);
-            Despawn(DespawnType.Destroy); // Could pool to keep in memory, should probably pool elsewhere on load
+            Despawn();
         }
     }
 }

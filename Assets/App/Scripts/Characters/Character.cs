@@ -13,6 +13,8 @@ namespace Assets.App.Scripts.Characters
         public CharacterMovement movement { get; private set; }
         public CharacterSkills skills { get; private set; }
 
+        public CharacterHealth health { get; private set; }
+
 
         private void Awake()
         {
@@ -21,6 +23,8 @@ namespace Assets.App.Scripts.Characters
             input = GetComponent<PlayerInputController>();
             camera = GetComponent<CharacterCamera>();
             movement = GetComponent<CharacterMovement>();
+            skills = GetComponent<CharacterSkills>();
+            health = GetComponent<CharacterHealth>();
         }
 
         private void Update()

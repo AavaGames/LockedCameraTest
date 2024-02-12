@@ -7,16 +7,17 @@ using Assets.App.Scripts.Characters;
 
 namespace Assets.App.Scripts.Skills
 {
-    public class BaseHomingProjectile : NetworkBehaviour
+    public class BaseHomingProjectile : SkillObject
     {
         public float projectileSpeed = 5;
         public float rotateSpeed = 2;
         public Rigidbody projectileRB;
-        public Character character;
         private Vector3 heading;
 
         private void Awake()
         {
+            base.Awake();
+
             InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
         }
 

@@ -4958,8 +4958,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7697018871385252034}
-  - component: {fileID: 9178703516224490382}
+  - component: {fileID: 4144650365366435061}
   - component: {fileID: 6503493121665876826}
+  - component: {fileID: 8451436701443162378}
   m_Layer: 0
   m_Name: DebrisWallVFX
   m_TagString: Untagged
@@ -4984,7 +4985,7 @@ Transform:
   - {fileID: 8408195902306115164}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9178703516224490382
+--- !u!114 &4144650365366435061
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4993,10 +4994,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5744668310775622292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75fcf2127c859234ba881fde7cfc0827, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a2dc35a5a8008249b85ae6170aebd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyAfter: 2
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 6503493121665876826}
+  _networkObjectCache: {fileID: 0}
+  character: {fileID: 0}
 --- !u!114 &6503493121665876826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5012,9 +5016,11 @@ MonoBehaviour:
   <IsNested>k__BackingField: 0
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
-  _networkBehaviours: []
+  _networkBehaviours:
+  - {fileID: 0}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
-  <ChildNetworkObjects>k__BackingField: []
+  <ChildNetworkObjects>k__BackingField:
+  - {fileID: 4704111302840454462}
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
@@ -5029,6 +5035,22 @@ MonoBehaviour:
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 15483131617713649672
+--- !u!114 &8451436701443162378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5744668310775622292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66fccc33739c5c7448935620f4f4de51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 6503493121665876826}
+  _networkObjectCache: {fileID: 0}
+  destroyAfter: 2
 --- !u!1001 &7238826144990964559
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5037,6 +5059,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7697018871385252034}
     m_Modifications:
+    - target: {fileID: -6540028989580532111, guid: 303325f7548435445a174920155286ac,
+        type: 3}
+      propertyPath: <IsNested>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5097,6 +5124,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 303325f7548435445a174920155286ac, type: 3}
+--- !u!114 &4704111302840454462 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -6540028989580532111, guid: 303325f7548435445a174920155286ac,
+    type: 3}
+  m_PrefabInstance: {fileID: 7238826144990964559}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8408195902306115164 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1214445336012453139, guid: 303325f7548435445a174920155286ac,

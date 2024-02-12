@@ -249,6 +249,14 @@ namespace Assets.App.Scripts.Characters
             active = false;
         }
 
+        /// <summary>
+        /// Sets vertical velocity to 0, combined with Deactivate() to hover in the air
+        /// </summary>
+        public void ResetVerticalVelocity()
+        {
+            _verticalVelocity = 0f;
+        }
+
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
@@ -272,6 +280,9 @@ namespace Assets.App.Scripts.Characters
 
         private void MoveWithData(MoveData md, float delta)
         {
+            if (!md.active)
+                return;
+
             float targetSpeed = moveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -281,38 +292,37 @@ namespace Assets.App.Scripts.Characters
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, delta * animSpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
-
-            if (md.active)
-            {
-                Vector3 inputDirection = new Vector3(md.move.x, 0.0f, md.move.y).normalized;
-
-                // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-                if (md.move != Vector2.zero)
-                {
-                    _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + md.cameraEulerY;
-
-                    // rotate to face input direction relative to camera position
-                    transform.rotation = Quaternion.Slerp(transform.rotation,
-                        Quaternion.Euler(0.0f, _targetRotation, 0.0f),
-                        rotationSmoothSpeed * delta);
-                }
-
-                Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-
-                // move the player
-                _controller.Move(targetDirection.normalized * (targetSpeed * delta) +
-                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * delta);
-            }
-
             if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, 1f);
             }
+
+            Vector3 inputDirection = new Vector3(md.move.x, 0.0f, md.move.y).normalized;
+
+            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            if (md.move != Vector2.zero)
+            {
+                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + md.cameraEulerY;
+
+                // rotate to face input direction relative to camera position
+                transform.rotation = Quaternion.Slerp(transform.rotation,
+                    Quaternion.Euler(0.0f, _targetRotation, 0.0f),
+                    rotationSmoothSpeed * delta);
+            }
+
+            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+            // move the player
+            _controller.Move(targetDirection.normalized * (targetSpeed * delta) +
+                                new Vector3(0.0f, _verticalVelocity, 0.0f) * delta);
         }
 
         private void JumpAndGravity(MoveData md, float delta)
         {
+            if (!md.active)
+                return;
+
             if (grounded)
             {
                 _fallTimeoutTimer = fallTimeout;
@@ -351,6 +361,7 @@ namespace Assets.App.Scripts.Characters
                         _animator.SetBool(_animIDFreeFall, true);
                 }
             }
+
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < terminalVelocity)

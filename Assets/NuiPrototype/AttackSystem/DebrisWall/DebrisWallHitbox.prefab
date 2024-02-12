@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214445336012453139}
-  - component: {fileID: 1429323443355042876}
+  - component: {fileID: 323876895569819487}
   - component: {fileID: 4668770323916399618}
   - component: {fileID: -6540028989580532111}
   m_Layer: 0
@@ -34,7 +34,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 33.222, y: -224.324, z: -147.559}
---- !u!114 &1429323443355042876
+--- !u!114 &323876895569819487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,12 +43,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4740512293727613328}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75fcf2127c859234ba881fde7cfc0827, type: 3}
+  m_Script: {fileID: 11500000, guid: 66fccc33739c5c7448935620f4f4de51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 255
   _addedNetworkObject: {fileID: -6540028989580532111}
-  _networkObjectCache: {fileID: -6540028989580532111}
+  _networkObjectCache: {fileID: 0}
   destroyAfter: 0.5
 --- !u!65 &4668770323916399618
 BoxCollider:
@@ -87,13 +87,13 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 1429323443355042876}
+  - {fileID: 0}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    LocalScale: {x: 0, y: 0, z: 0}
+    Position: {x: -0.133, y: 0.34, z: 0.26}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 2, y: 2, z: 2}
   _isNetworked: 1
   _isGlobal: 0
   _initializeOrder: 0

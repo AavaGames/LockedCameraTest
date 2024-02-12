@@ -9,16 +9,11 @@ namespace Assets.App.Scripts.Skills
     {
         public Character character;
 
-        // Use this for initialization
-        void Start()
+        protected NetworkObject nob;
+
+        protected void Awake()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            nob = GetComponent<NetworkObject>();
         }
     }
 }

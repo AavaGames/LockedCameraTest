@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.App.Scripts.Skills
 {
-    [CreateAssetMenu(fileName = "Data", menuName = "Skill System/Skill", order = 1)]
+    [CreateAssetMenu(fileName = "Skill", menuName = "Skill System/Skill", order = 1)]
     public class Skill : ScriptableObject
     {
         // How will this be language localized?
@@ -13,6 +13,8 @@ namespace Assets.App.Scripts.Skills
         new public string name;
         [Tooltip("The text description of the move.")]
         public string description;
+
+        [Space(10)]
         [Tooltip("The mana cost to cast")]
         public int cost = 1;
         [Tooltip("The amount of times the skill can be used. (-1 is infinite)")]
@@ -21,6 +23,7 @@ namespace Assets.App.Scripts.Skills
         public enum SkillType { None, Offensive, Defensive, Erase, Status, Special, Environment }
 
         public enum SkillSchool { None, Nature, Tech, Mind, Body, Spirit }
+        [Space(10)]
         public SkillType type = SkillType.None;
         public SkillSchool school = SkillSchool.None;
 

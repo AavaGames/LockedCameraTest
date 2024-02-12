@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214445336012453139}
+  - component: {fileID: 7599789530546332729}
+  - component: {fileID: 8557714776993739805}
   - component: {fileID: 8200790605645424306}
-  - component: {fileID: 1429323443355042876}
-  - component: {fileID: 6533100146151484163}
   - component: {fileID: 7305145115437235866}
   - component: {fileID: 4444619984936706966}
   - component: {fileID: 7220845339486341521}
@@ -34,10 +34,45 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.563, z: 0.573}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7599789530546332729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740512293727613328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a9d72df7bc7eb14fa7d30ea3e5344de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 7220845339486341521}
+  _networkObjectCache: {fileID: 7220845339486341521}
+  character: {fileID: 0}
+  projectileSpeed: 5
+  rotateSpeed: 2
+  projectileRB: {fileID: 0}
+--- !u!114 &8557714776993739805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740512293727613328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66fccc33739c5c7448935620f4f4de51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 7220845339486341521}
+  _networkObjectCache: {fileID: 7220845339486341521}
+  destroyAfter: 5
 --- !u!136 &8200790605645424306
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -61,41 +96,6 @@ CapsuleCollider:
   m_Height: 0.79
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1429323443355042876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4740512293727613328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75fcf2127c859234ba881fde7cfc0827, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 7220845339486341521}
-  _networkObjectCache: {fileID: 7220845339486341521}
-  destroyAfter: 5
---- !u!114 &6533100146151484163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4740512293727613328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 283d333a9abc134428079e1672da5bcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 7220845339486341521}
-  _networkObjectCache: {fileID: 7220845339486341521}
-  projectileSpeed: 10
-  rotateSpeed: 200
-  projectileRB: {fileID: 7305145115437235866}
-  character: {fileID: 0}
 --- !u!54 &7305145115437235866
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -243,8 +243,8 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 1429323443355042876}
-  - {fileID: 6533100146151484163}
+  - {fileID: 7599789530546332729}
+  - {fileID: 8557714776993739805}
   - {fileID: 3473916327457736582}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
@@ -257,7 +257,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 9
+  <PrefabId>k__BackingField: 24
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -274,10 +274,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 7
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 7220845339486341521}
-  _networkObjectCache: {fileID: 0}
-  _componentConfiguration: 0
+  _networkObjectCache: {fileID: 7220845339486341521}
+  _componentConfiguration: 2
   _synchronizeParent: 0
   _packing:
     Position: 1

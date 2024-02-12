@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8492640937529545577}
-  - component: {fileID: -7230315149758282831}
   - component: {fileID: -2492373596334648646}
+  - component: {fileID: 260926882458072015}
   m_Layer: 0
   m_Name: EnergySwordVFX
   m_TagString: Untagged
@@ -34,22 +34,6 @@ Transform:
   - {fileID: 5994793806871304997}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-7230315149758282831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4841455522828208466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75fcf2127c859234ba881fde7cfc0827, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 0
-  _addedNetworkObject: {fileID: -2492373596334648646}
-  _networkObjectCache: {fileID: -2492373596334648646}
-  destroyAfter: 1
 --- !u!114 &-2492373596334648646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +50,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: -7230315149758282831}
+  - {fileID: 0}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -78,11 +62,27 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 8
+  <PrefabId>k__BackingField: 17
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 9337738352310440864
+--- !u!114 &260926882458072015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4841455522828208466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66fccc33739c5c7448935620f4f4de51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: -2492373596334648646}
+  _networkObjectCache: {fileID: 0}
+  destroyAfter: 1
 --- !u!1 &5203533414764907332
 GameObject:
   m_ObjectHideFlags: 0

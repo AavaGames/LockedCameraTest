@@ -20,21 +20,21 @@ namespace Assets.App.Scripts.Characters
         private NetworkAnimator _networkAnimator;
         private PlayerInputController _input;
 
-        private bool canAttack = true;
+        private bool canUseSkill = true;
 
         [Required]
         public SkillLibrary skillLibrary;
 
         public enum SkillDirection { North, East, South, West }
 
-        private class Skill
+        private class SkillContainer
         {
-            public AttackClass skill;
+            public Skill skill;
             public TextMeshProUGUI textMesh;
             public bool queued;
         }
 
-        private Dictionary<SkillDirection, Skill> skills = new Dictionary<SkillDirection, Skill>();
+        private Dictionary<SkillDirection, SkillContainer> skills = new Dictionary<SkillDirection, SkillContainer>();
 
         [Foldout("Dependency")]
         public TextMeshProUGUI skillNorthText;
@@ -56,7 +56,7 @@ namespace Assets.App.Scripts.Characters
 
             foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
             {
-                skills.Add(direction, new Skill());
+                skills.Add(direction, new SkillContainer());
             }
 
             skills[SkillDirection.North].textMesh = skillNorthText;
@@ -66,14 +66,14 @@ namespace Assets.App.Scripts.Characters
 
             UpdateSkill(skills[SkillDirection.North], 1);
             UpdateSkill(skills[SkillDirection.East], 0);
-            UpdateSkill(skills[SkillDirection.South], 3);
-            UpdateSkill(skills[SkillDirection.West], 4);
+            UpdateSkill(skills[SkillDirection.South], 2);
+            UpdateSkill(skills[SkillDirection.West], 3);
         }
 
-        private void UpdateSkill(Skill skill, int skillIndex)
+        private void UpdateSkill(SkillContainer skillContainer, int skillIndex)
         {
-            skill.skill = skillLibrary.skills[skillIndex];
-            skill.textMesh.text = skill.skill.attackName;
+            skillContainer.skill = skillLibrary.skills[skillIndex];
+            skillContainer.textMesh.text = skillContainer.skill.name;
         }
 
         public override void OnStartClient()
@@ -122,7 +122,7 @@ namespace Assets.App.Scripts.Characters
         {
             foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
             {
-                Skill currentSkill = skills[direction];
+                SkillContainer currentSkill = skills[direction];
                 if (currentSkill.queued)
                 {
                     // Client Attacks
@@ -136,13 +136,16 @@ namespace Assets.App.Scripts.Characters
         }
 
         [Client]
-        public void ExecuteAttack(AttackClass attack)
+        public void ExecuteAttack(Skill skill)
         {
-            if (canAttack)
+            if (canUseSkill)
             {
+                if (!_character.movement.grounded && !skill.canUseInAir)
+                    return;
+
                 Debug.Log("Attack Executed");
 
-                canAttack = false;
+                canUseSkill = false;
 
                 // Face target
                 if (_character.camera.Targeting && _character.camera.CurrentTarget != null)
@@ -156,21 +159,22 @@ namespace Assets.App.Scripts.Characters
                 // Crossfading causes non-owner Characters to get stuck on non-host clients
                 //_networkAnimator.CrossFade(attack.attackAnimation, 0.25f, 0);
 
-                _networkAnimator.Play(attack.attackAnimation);
+                _networkAnimator.Play(skill.animationName);
 
                 _character.movement.Deactivate();
+                _character.movement.ResetVerticalVelocity();
             }
         }
 
         [ServerRpc]
-        private void CmdExecuteAttack(AttackClass attack)
+        private void CmdExecuteAttack(Skill attack)
         {
             // Skip if client host
             if (!IsOwner)
             {
                 Debug.Log("SERVER: " + gameObject.name + " is executing attack");
 
-                if (!canAttack)
+                if (!canUseSkill)
                 {
                     Debug.LogWarning("SERVER ERROR: Player Is not allowed to attack");
                     // Kick player out of animation
@@ -179,8 +183,6 @@ namespace Assets.App.Scripts.Characters
                 ExecuteAttack(attack);
             }
         }
-
-        // TODO change name to SpawnSkillObject_
 
         public void InitializeSkillObject(SkillObject skillObj)
         {
@@ -226,7 +228,7 @@ namespace Assets.App.Scripts.Characters
         public void AnimationEnd()
         {
             _character.movement.Activate();
-            canAttack = true;
+            canUseSkill = true;
         }
     }
 }

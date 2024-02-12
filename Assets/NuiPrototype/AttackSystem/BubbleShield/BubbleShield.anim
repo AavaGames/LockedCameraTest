@@ -23062,16 +23062,18 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.15
-    functionName: SpawnObjectLocal
+    functionName: SpawnSkillObjectLocal
     data: 
-    objectReferenceParameter: {fileID: 5744668310775622292, guid: 5d1081e54c7b74a41b589369496afa0c, type: 3}
+    objectReferenceParameter: {fileID: 4740512293727613328, guid: d94929126706d0f48ba79fbcea4f6994,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.15
-    functionName: SpawnObjectLocal
+    functionName: SpawnSkillObjectLocal
     data: 
-    objectReferenceParameter: {fileID: 4740512293727613328, guid: d94929126706d0f48ba79fbcea4f6994, type: 3}
+    objectReferenceParameter: {fileID: 5744668310775622292, guid: 5d1081e54c7b74a41b589369496afa0c,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

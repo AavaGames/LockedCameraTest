@@ -1053,7 +1053,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
-  skillLibrary: {fileID: 11400000, guid: 147e57110b170484d820fab126a6d6dc, type: 2}
+  skillLibrary: {fileID: 11400000, guid: 7abc2fc5d73238b40aef71dcb10ded27, type: 2}
   skillNorthText: {fileID: 2040980746760239566}
   skillEastText: {fileID: 1814360971475191264}
   skillSouthText: {fileID: 4549836849270622857}
@@ -1357,7 +1357,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 6
+  <PrefabId>k__BackingField: 5
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Assets.App.Scripts.Skills
 {
-    [CreateAssetMenu(fileName = "Cardium", menuName = "AttackSystem/SkillLibrary")]
+    [CreateAssetMenu(fileName = "SkillLibrary", menuName = "Skill System/Skill Library")]
     public class SkillLibrary : ScriptableObject
     {
-        public List<AttackClass> skills;
+        public List<Skill> skills;
         public bool includeTestingSkills;
     }
 }
