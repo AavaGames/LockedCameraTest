@@ -3,7 +3,7 @@ using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Assets.App.Scripts.Character
+namespace Assets.App.Scripts.Characters
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayerInput))]

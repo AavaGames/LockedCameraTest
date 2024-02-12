@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.App.Script.Combat
+namespace Assets.App.Scripts.Combat
 {
     public class TargetManager : MonoBehaviour
     {

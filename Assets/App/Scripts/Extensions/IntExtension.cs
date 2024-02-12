@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.App.Script.Extensions
+namespace Assets.App.Scripts.Extensions
 {
     public static class IntExtension
     {

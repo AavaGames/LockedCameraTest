@@ -7,13 +7,13 @@ using FishNet.Object;
 using FishNet;
 using GameKit.Utilities.Types;
 using NaughtyAttributes;
-using Assets.App.Script.Extensions;
-using Assets.App.Script.Combat;
-using Assets.App.Scripts.Character;
+using Assets.App.Scripts.Extensions;
+using Assets.App.Scripts.Combat;
+using Assets.App.Scripts.Characters;
 using System;
 using UnityEngine.InputSystem;
 
-namespace Assets.App.Script.Character
+namespace Assets.App.Scripts.Characters
 {
     public class CharacterCamera : NetworkBehaviour
     {

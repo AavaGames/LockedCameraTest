@@ -1,4 +1,4 @@
-using Assets.App.Script.Character;
+using Assets.App.Scripts.Characters;
 using FishNet;
 using FishNet.Object;
 using System.Collections;

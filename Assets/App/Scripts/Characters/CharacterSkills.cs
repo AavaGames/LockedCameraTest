@@ -1,4 +1,5 @@
-﻿using Assets.App.Scripts.Character;
+﻿using Assets.App.Scripts.Characters;
+using Assets.App.Scripts.Skills;
 using FishNet;
 using FishNet.Component.Animating;
 using FishNet.Object;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-namespace Assets.App.Script.Character
+namespace Assets.App.Scripts.Characters
 {
     public class CharacterSkills : NetworkBehaviour
     {
@@ -181,36 +182,35 @@ namespace Assets.App.Script.Character
 
         // TODO change name to SpawnSkillObject_
 
+        public void InitializeSkillObject(SkillObject skillObj)
+        {
+            if (skillObj != null)
+            {
+                skillObj.character = _character;
+            }
+        }
+
         // animation event object spawn
-        public void SpawnObjectLocal(GameObject spawnedObj)
+        public void SpawnSkillObjectLocal(GameObject spawnedObj)
         {
             if (IsServer)
             {
                 GameObject currentObj = Instantiate(spawnedObj, transform, false);
 
-                // TODO change to SkillObject class that is held by all of them
-                var obj = currentObj.GetComponent<BaseHomingProjectile>();
-                if (obj != null)
-                {
-                    obj.character = _character;
-                }
+                InitializeSkillObject(currentObj.GetComponent<SkillObject>());
 
                 Spawn(currentObj, LocalConnection);
                 // NOTE not totally sure if this is giving ownership to the caller or to every client
             }
         }
 
-        public void SpawnObjectGlobal(GameObject spawnedObj)
+        public void SpawnSkillObjectGlobal(GameObject spawnedObj)
         {
             if (IsServer)
             {
                 GameObject currentObj = Instantiate(spawnedObj, transform, false);
 
-                var obj = currentObj.GetComponent<BaseHomingProjectile>();
-                if (obj != null)
-                {
-                    obj.character = _character;
-                }
+                InitializeSkillObject(currentObj.GetComponent<SkillObject>());
 
                 currentObj.transform.parent = null;
                 Spawn(currentObj, LocalConnection);

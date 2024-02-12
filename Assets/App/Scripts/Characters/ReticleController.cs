@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-namespace Assets.App.Script.Character
+namespace Assets.App.Scripts.Characters
 {
     public class ReticleController : NetworkBehaviour
     {

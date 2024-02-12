@@ -1,4 +1,4 @@
-﻿using Assets.App.Scripts.Character;
+﻿using Assets.App.Scripts.Characters;
 using Cinemachine;
 using FishNet;
 using FishNet.Object;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Assets.App.Scripts.Character
+namespace Assets.App.Scripts.Characters
 {
     public class CharacterMovement : NetworkBehaviour
     {

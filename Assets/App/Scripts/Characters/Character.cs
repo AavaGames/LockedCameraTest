@@ -1,10 +1,10 @@
-using Assets.App.Scripts.Character;
+using Assets.App.Scripts.Characters;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.App.Script.Character
+namespace Assets.App.Scripts.Characters
 {
     public class Character : NetworkBehaviour
     {
