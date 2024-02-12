@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7305145115437235866}
   - component: {fileID: 4444619984936706966}
   - component: {fileID: 7220845339486341521}
+  - component: {fileID: 3473916327457736582}
   m_Layer: 0
   m_Name: FingerBeamProjectile
   m_TagString: Untagged
@@ -88,10 +89,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 283d333a9abc134428079e1672da5bcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 7220845339486341521}
+  _networkObjectCache: {fileID: 7220845339486341521}
   projectileSpeed: 10
   rotateSpeed: 200
   projectileRB: {fileID: 7305145115437235866}
-  playerController: {fileID: 0}
+  character: {fileID: 0}
 --- !u!54 &7305145115437235866
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -240,12 +244,14 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
   - {fileID: 1429323443355042876}
+  - {fileID: 6533100146151484163}
+  - {fileID: 3473916327457736582}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    LocalScale: {x: 0, y: 0, z: 0}
+    Position: {x: 0, y: 0.563, z: 0.573}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isGlobal: 0
   _initializeOrder: 0
@@ -256,3 +262,48 @@ MonoBehaviour:
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 13553544937918469077
+--- !u!114 &3473916327457736582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740512293727613328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 7
+  _addedNetworkObject: {fileID: 7220845339486341521}
+  _networkObjectCache: {fileID: 0}
+  _componentConfiguration: 0
+  _synchronizeParent: 0
+  _packing:
+    Position: 1
+    Rotation: 1
+    Scale: 0
+  _interpolation: 2
+  _extrapolation: 0
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  _scaleThreshold: 1
+  _clientAuthoritative: 0
+  _sendToOwner: 0
+  _enableNetworkLod: 1
+  _interval: 1
+  _synchronizePosition: 1
+  _positionSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeRotation: 1
+  _rotationSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeScale: 1
+  _scaleSnapping:
+    X: 0
+    Y: 0
+    Z: 0

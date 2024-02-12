@@ -64,7 +64,7 @@ namespace Assets.App.Script.Character
             skills[SkillDirection.West].textMesh = skillWestText;
 
             UpdateSkill(skills[SkillDirection.North], 1);
-            UpdateSkill(skills[SkillDirection.East], 2);
+            UpdateSkill(skills[SkillDirection.East], 0);
             UpdateSkill(skills[SkillDirection.South], 3);
             UpdateSkill(skills[SkillDirection.West], 4);
         }
