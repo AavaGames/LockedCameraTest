@@ -1213,17 +1213,17 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 0}
   _networkObjectCache: {fileID: 0}
-  followCameraPrefab: {fileID: 0}
-  targetCameraPrefab: {fileID: 0}
-  sortingLabel: {fileID: 929105503748531525}
-  targetSortingType: 0
-  cameraFollow: {fileID: 0}
-  cameraClamp:
+  FollowCameraPrefab: {fileID: 0}
+  TargetCameraPrefab: {fileID: 0}
+  SortingLabel: {fileID: 0}
+  TargetSorting: 0
+  CameraFollow: {fileID: 0}
+  CameraClamp:
     Minimum: -30
     Maximum: 70
-  cameraAngleOverride: 0
-  lockCameraPosition: 0
-  cameraFollowingSpeed: {x: 180, y: 180}
+  CameraAngleOverride: 0
+  LockCameraPosition: 0
+  CameraFollowingSpeed: {x: 180, y: 180}
 --- !u!95 &6982812146204527121
 Animator:
   serializedVersion: 5

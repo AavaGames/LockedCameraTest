@@ -11,14 +11,16 @@ namespace Assets.App.Scripts.Skills
     {
         public float ProjectileSpeed = 5;
         public float RotateSpeed = 2;
-        public Rigidbody ProjectileRB;
+        private Rigidbody ProjectileRB;
         private Vector3 _heading;
 
-        private void Awake()
+        private new void Awake()
         {
             base.Awake();
 
             InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
+
+            ProjectileRB = GetComponent<Rigidbody>();
         }
 
         private void OnDestroy()

@@ -13,10 +13,13 @@ namespace Assets.App.Scripts.Characters
     {
         private CharacterCamera _playerCameraController;
 
+        [Required]
         [Foldout("Dependencies")]
         public Canvas PlayerCanvas;
+        [Required]
         [Foldout("Dependencies")]
         public Image Reticle;
+        [Required]
         [Foldout("Dependencies")]
         public TextMeshProUGUI DistanceText;
 

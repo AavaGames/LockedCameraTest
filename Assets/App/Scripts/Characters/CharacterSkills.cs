@@ -36,13 +36,17 @@ namespace Assets.App.Scripts.Characters
 
         private Dictionary<SkillDirection, SkillContainer> _skills = new Dictionary<SkillDirection, SkillContainer>();
 
-        [Foldout("Dependency")]
+        [Required]
+        [Foldout("Dependencies")]
         public TextMeshProUGUI SkillNorthText;
-        [Foldout("Dependency")]
+        [Required]
+        [Foldout("Dependencies")]
         public TextMeshProUGUI SkillEastText;
-        [Foldout("Dependency")]
+        [Required]
+        [Foldout("Dependencies")]
         public TextMeshProUGUI SkillSouthText;
-        [Foldout("Dependency")]
+        [Required]
+        [Foldout("Dependencies")]
         public TextMeshProUGUI SkillWestText;
 
         void Awake()

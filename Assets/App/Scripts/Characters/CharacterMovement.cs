@@ -131,6 +131,7 @@ namespace Assets.App.Scripts.Characters
             InstanceFinder.TimeManager.OnUpdate += TimeManager_OnUpdate;
 
             _controller = GetComponent<CharacterController>();
+            _animator = GetComponent<Animator>();
         }
 
         private void OnDestroy()

@@ -23,15 +23,18 @@ namespace Assets.App.Scripts.Characters
         private Target _target;
         private PlayerInputController _input;
 
+        [Required]
         [Foldout("Dependencies")]
         public GameObject FollowCameraPrefab;
+        [Required]
         [Foldout("Dependencies")]
         public GameObject TargetCameraPrefab;
+        [Required]
         [Foldout("Dependencies")]
         public TextMeshProUGUI SortingLabel;
 
         [OnValueChanged("SetTargetingTypeThroughInspector")]
-        public TargetSortingType TargetSorting;
+        public TargetSortingType TargetSorting = TargetSortingType.Distance;
 
         private bool _targeting = false;
         public bool Targeting => _targeting;

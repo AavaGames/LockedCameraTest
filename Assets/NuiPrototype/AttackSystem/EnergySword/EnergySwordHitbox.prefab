@@ -105,4 +105,4 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 8043914938998674978}
   _networkObjectCache: {fileID: 0}
-  destroyAfter: 0.3
+  DestroyAfter: 1

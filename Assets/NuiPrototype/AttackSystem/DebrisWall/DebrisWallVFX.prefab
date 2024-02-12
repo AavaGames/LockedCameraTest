@@ -5000,7 +5000,7 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 6503493121665876826}
   _networkObjectCache: {fileID: 0}
-  character: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &6503493121665876826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5050,7 +5050,7 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 6503493121665876826}
   _networkObjectCache: {fileID: 0}
-  destroyAfter: 2
+  DestroyAfter: 2
 --- !u!1001 &7238826144990964559
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -151,9 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403df48fa4edb8a4d8cbc9245c74769e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetManager: {fileID: 0}
-  team: -1
-  hasNewTargets: 1
+  TargetManager: {fileID: 0}
+  Team: -1
+  HasNewTargets: 1
 --- !u!1 &3286470007202397567
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,7 +428,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bubble Shield
+  m_text: Empty
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -668,7 +668,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bubble Shield
+  m_text: Empty
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -802,7 +802,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bubble Shield
+  m_text: Empty
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1053,11 +1053,11 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
-  skillLibrary: {fileID: 11400000, guid: 7abc2fc5d73238b40aef71dcb10ded27, type: 2}
-  skillNorthText: {fileID: 2040980746760239566}
-  skillEastText: {fileID: 1814360971475191264}
-  skillSouthText: {fileID: 4549836849270622857}
-  skillWestText: {fileID: 4227953144578557117}
+  SkillLibrary: {fileID: 11400000, guid: 7abc2fc5d73238b40aef71dcb10ded27, type: 2}
+  SkillNorthText: {fileID: 2040980746760239566}
+  SkillEastText: {fileID: 1814360971475191264}
+  SkillSouthText: {fileID: 4549836849270622857}
+  SkillWestText: {fileID: 4227953144578557117}
 --- !u!114 &1582589437405957810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1073,44 +1073,22 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
-  active: 1
-  moveSpeed: 5
-  rotationSmoothSpeed: 12
-  gravity: -20
-  terminalVelocity: 53
-  jumpTimeout: 0.5
-  fallTimeout: 0.15
-  jumpHeight: 2
-  jumpVelocityCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  jumpMoveSpeedCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  grounded: 1
-  groundedOffset: -0.14
-  groundLayers:
+  Active: 1
+  MoveSpeed: 5
+  RotationSmoothSpeed: 12
+  Gravity: -15
+  TerminalVelocity: 53
+  JumpTimeout: 0.5
+  FallTimeout: 0.15
+  JumpHeight: 2
+  Grounded: 1
+  GroundedOffset: -0.14
+  GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  landingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
-  footstepAudioClips:
-  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
-  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
-  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
-  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
-  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
-  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
-  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
-  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
-  footstepAudioVolume: 0.5
+  LandingAudioClip: {fileID: 0}
+  FootstepAudioClips: []
+  FootstepAudioVolume: 0.5
   animSpeedChangeRate: 10
 --- !u!114 &6870194006964006394
 MonoBehaviour:
@@ -1127,19 +1105,19 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
-  followCameraPrefab: {fileID: 763043542228073354, guid: 6c30e0f092b0f1148bdc8529282aec05,
+  FollowCameraPrefab: {fileID: 763043542228073354, guid: 6c30e0f092b0f1148bdc8529282aec05,
     type: 3}
-  targetCameraPrefab: {fileID: 5446856778594401102, guid: 3972bcf7cd2d1e640aeab5bd9dcc2347,
+  TargetCameraPrefab: {fileID: 5446856778594401102, guid: 3972bcf7cd2d1e640aeab5bd9dcc2347,
     type: 3}
-  sortingLabel: {fileID: 5747033021053095736}
-  targetSortingType: 1
-  cameraFollow: {fileID: 1508356748671528604}
-  cameraClamp:
+  SortingLabel: {fileID: 5747033021053095736}
+  TargetSorting: 1
+  CameraFollow: {fileID: 1508356748671528604}
+  CameraClamp:
     Minimum: -30
     Maximum: 70
-  cameraAngleOverride: 0
-  lockCameraPosition: 0
-  cameraFollowingSpeed: {x: 180, y: 180}
+  CameraAngleOverride: 0
+  LockCameraPosition: 0
+  CameraFollowingSpeed: {x: 180, y: 180}
 --- !u!114 &3176412614883773830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,11 +1133,11 @@ MonoBehaviour:
   _componentIndexCache: 4
   _addedNetworkObject: {fileID: 1428437583}
   _networkObjectCache: {fileID: 1428437583}
-  playerCanvas: {fileID: 1546533758241658452}
-  reticle: {fileID: 7130207793462097467}
-  distanceText: {fileID: 5034586835424538992}
-  closeRange: 5
-  midRange: 15
+  PlayerCanvas: {fileID: 1546533758241658452}
+  Reticle: {fileID: 7130207793462097467}
+  DistanceText: {fileID: 5034586835424538992}
+  CloseRange: 5
+  MidRange: 10
 --- !u!114 &5387830731026041219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1535,7 +1513,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bubble Shield
+  m_text: Empty
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: DebrisWall
   m_EditorClassIdentifier: 
   ID: -1
-  name: Debris Wall
-  description: 
-  cost: 1
-  uses: -1
-  type: 2
-  school: 1
-  animationName: DebrisWall
-  canUseInAir: 0
-  isMelee: 0
-  homingAccuracy: 1
-  maxRange: 0
-  isComboAttack: 0
-  comboInto: {fileID: 0}
-  meleeDashRange: 0
+  Name: DebrisWall
+  Description: 
+  Cost: 1
+  Uses: -1
+  Type: 0
+  School: 0
+  AnimationName: DebrisWall
+  CanUseInAir: 0
+  IsMelee: 0
+  HomingAccuracy: 1
+  MaxRange: 0
+  IsComboAttack: 0
+  ComboInto: {fileID: 0}
+  MeleeDashRange: 0

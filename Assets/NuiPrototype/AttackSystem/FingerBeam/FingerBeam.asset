@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: FingerBeam
   m_EditorClassIdentifier: 
   ID: -1
-  name: Finger Beam
-  description: a forward homing beam
-  cost: 1
-  uses: -1
-  type: 1
-  school: 3
-  animationName: FingerBeam
-  canUseInAir: 0
-  isMelee: 0
-  homingAccuracy: 1
-  maxRange: 0
-  isComboAttack: 0
-  comboInto: {fileID: 0}
-  meleeDashRange: 0
+  Name: Finger Beam
+  Description: 
+  Cost: 1
+  Uses: -1
+  Type: 0
+  School: 0
+  AnimationName: FingerBeam
+  CanUseInAir: 0
+  IsMelee: 0
+  HomingAccuracy: 1
+  MaxRange: 0
+  IsComboAttack: 0
+  ComboInto: {fileID: 0}
+  MeleeDashRange: 0
