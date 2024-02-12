@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.App.Scripts.Characters
 {
-    public class CharacterBuffs : MonoBehaviour
+    public class CharacterStats : MonoBehaviour
     {
         public float movement;
     }
