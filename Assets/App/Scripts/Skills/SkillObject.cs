@@ -7,13 +7,13 @@ namespace Assets.App.Scripts.Skills
 {
     public class SkillObject : NetworkBehaviour
     {
-        public Character character;
+        public Character Character;
 
-        protected NetworkObject nob;
+        protected NetworkObject _nob;
 
         protected void Awake()
         {
-            nob = GetComponent<NetworkObject>();
+            _nob = GetComponent<NetworkObject>();
         }
     }
 }

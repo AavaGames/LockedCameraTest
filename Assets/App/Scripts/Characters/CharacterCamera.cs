@@ -24,22 +24,22 @@ namespace Assets.App.Scripts.Characters
         private PlayerInputController _input;
 
         [Foldout("Dependencies")]
-        public GameObject followCameraPrefab;
+        public GameObject FollowCameraPrefab;
         [Foldout("Dependencies")]
-        public GameObject targetCameraPrefab;
+        public GameObject TargetCameraPrefab;
         [Foldout("Dependencies")]
-        public TextMeshProUGUI sortingLabel;
+        public TextMeshProUGUI SortingLabel;
 
         [OnValueChanged("SetTargetingTypeThroughInspector")]
-        public TargetSortingType targetSortingType;
+        public TargetSortingType TargetSorting;
 
         private bool _targeting = false;
         public bool Targeting => _targeting;
-        private List<Target> validTargets = new List<Target>();
+        private List<Target> _validTargets = new List<Target>();
         private int _targetIndex = -1;
-        private Target currentTarget;
-        public Target CurrentTarget => currentTarget;
-        private Transform previousTarget; // used for camera transition
+        private Target _currentTarget;
+        public Target CurrentTarget => _currentTarget;
+        private Transform _previousTarget; // used for camera transition
         private float _targetDistance = 0f;
         public float TargetDistance => _targetDistance;
 
@@ -48,13 +48,13 @@ namespace Assets.App.Scripts.Characters
         private Coroutine _targetFollowLockoutCoroutine;
 
         [Header("Cameras")]
-        public GameObject cameraFollow;
+        public GameObject CameraFollow;
 
-        public FloatRange cameraClamp = new FloatRange(-30f, 70f);
+        public FloatRange CameraClamp = new FloatRange(-30f, 70f);
         [Tooltip("Additional degrees to override the camera. Useful for fine tuning camera position when locked")]
-        public float cameraAngleOverride = 0.0f;
+        public float CameraAngleOverride = 0.0f;
         [Tooltip("For locking the camera position on all axis")]
-        public bool lockCameraPosition = false;
+        public bool LockCameraPosition = false;
 
         private CinemachineVirtualCamera _followCamera;
         private CinemachineVirtualCamera[] _targetingCameras;
@@ -63,18 +63,18 @@ namespace Assets.App.Scripts.Characters
         private const int TARGETING_CAMERAS = 2;
         private CinemachineVirtualCamera _activeCamera;
         public CinemachineVirtualCamera ActiveCamera => _activeCamera;
-        private Camera mainCamera;
+        private Camera _mainCamera;
 
         private float _cameraGoalPitch;
         private float _cameraGoalYaw;
         private const float LOOK_THRESHOLD = 0.01f;
 
-        public Vector2 cameraFollowingSpeed = new Vector2(180, 180);
+        public Vector2 CameraFollowingSpeed = new Vector2(180, 180);
 
-        private Action<InputAction.CallbackContext> targetAction;
-        private Action<InputAction.CallbackContext> cycleTargetSortingAction;
-        private Action<InputAction.CallbackContext> nextTargetAction;
-        private Action<InputAction.CallbackContext> previousTargetAction;
+        private Action<InputAction.CallbackContext> _targetAction;
+        private Action<InputAction.CallbackContext> _cycleTargetSortingAction;
+        private Action<InputAction.CallbackContext> _nextTargetAction;
+        private Action<InputAction.CallbackContext> _previousTargetAction;
 
 
         void Awake()
@@ -106,40 +106,40 @@ namespace Assets.App.Scripts.Characters
                 _reticleController = GetComponent<ReticleController>();
                 _target = GetComponentInChildren<Target>();
                 _input = GetComponent<PlayerInputController>();
-                mainCamera = Camera.main;
+                _mainCamera = Camera.main;
 
                 // Camera names are important for cinemachine blender settings
-                _followCamera = Instantiate(followCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                _followCamera.name = followCameraPrefab.name;
-                _followCamera.Follow = cameraFollow.transform;
+                _followCamera = Instantiate(FollowCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                _followCamera.name = FollowCameraPrefab.name;
+                _followCamera.Follow = CameraFollow.transform;
 
 
                 _targetingCameras = new CinemachineVirtualCamera[TARGETING_CAMERAS];
                 _cameraTargetFollows = new GameObject[TARGETING_CAMERAS];
                 for (int i = 0; i < TARGETING_CAMERAS; i++)
                 {
-                    _targetingCameras[i] = Instantiate(targetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
-                    _targetingCameras[i].name = targetCameraPrefab.name;
+                    _targetingCameras[i] = Instantiate(TargetCameraPrefab).GetComponent<CinemachineVirtualCamera>();
+                    _targetingCameras[i].name = TargetCameraPrefab.name;
                     _cameraTargetFollows[i] = new GameObject("CameraTargetFollow " + i.ToString());
                     _cameraTargetFollows[i].transform.parent = transform; // parent to character
-                    _cameraTargetFollows[i].transform.localPosition = cameraFollow.transform.localPosition;
+                    _cameraTargetFollows[i].transform.localPosition = CameraFollow.transform.localPosition;
                     _targetingCameras[i].Follow = _cameraTargetFollows[i].transform;
                 }
               
                 ChangeCamera(_followCamera);
 
-                SetCameraRotation(cameraFollow.transform.rotation.eulerAngles.y, cameraFollow.transform.rotation.eulerAngles.x);
-                SetTargetingType(targetSortingType);
+                SetCameraRotation(CameraFollow.transform.rotation.eulerAngles.y, CameraFollow.transform.rotation.eulerAngles.x);
+                SetTargetingType(TargetSorting);
 
-                targetAction = ctx => ToggleTargeting();
-                cycleTargetSortingAction = ctx => CycleTargetSorting();
-                nextTargetAction = ctx => FindTarget(true);
-                previousTargetAction = ctx => FindTarget(false);
+                _targetAction = ctx => ToggleTargeting();
+                _cycleTargetSortingAction = ctx => CycleTargetSorting();
+                _nextTargetAction = ctx => FindTarget(true);
+                _previousTargetAction = ctx => FindTarget(false);
 
-                _input.actions["Target"].performed += targetAction;
-                _input.actions["CycleTargetSorting"].performed += cycleTargetSortingAction;
-                _input.actions["NextTarget"].performed += nextTargetAction;
-                _input.actions["PreviousTarget"].performed += previousTargetAction;
+                _input.Actions["Target"].performed += _targetAction;
+                _input.Actions["CycleTargetSorting"].performed += _cycleTargetSortingAction;
+                _input.Actions["NextTarget"].performed += _nextTargetAction;
+                _input.Actions["PreviousTarget"].performed += _previousTargetAction;
 
                 gameObject.SetActive(true);
             }
@@ -151,10 +151,10 @@ namespace Assets.App.Scripts.Characters
 
             if (IsOwner)
             {
-                _input.actions["Target"].performed -= targetAction;
-                _input.actions["CycleTargetSorting"].performed -= cycleTargetSortingAction;
-                _input.actions["NextTarget"].performed -= nextTargetAction;
-                _input.actions["PreviousTarget"].performed -= previousTargetAction;
+                _input.Actions["Target"].performed -= _targetAction;
+                _input.Actions["CycleTargetSorting"].performed -= _cycleTargetSortingAction;
+                _input.Actions["NextTarget"].performed -= _nextTargetAction;
+                _input.Actions["PreviousTarget"].performed -= _previousTargetAction;
 
                 if (_followCamera != null)
                     Destroy(_followCamera.gameObject);
@@ -172,7 +172,7 @@ namespace Assets.App.Scripts.Characters
         {
             _targeting = !_targeting;
 
-            if (currentTarget == null)
+            if (_currentTarget == null)
                 FindTarget(true);
 
             CinemachineVirtualCamera cam;
@@ -180,7 +180,7 @@ namespace Assets.App.Scripts.Characters
             {
                 cam = _targetingCameras[_targetingCameraIndex];
                 _targetFollowLockout = false;
-                _reticleController.Show(targetSortingType == TargetSortingType.Distance);
+                _reticleController.Show(TargetSorting == TargetSortingType.Distance);
             }
             else
             {
@@ -193,7 +193,7 @@ namespace Assets.App.Scripts.Characters
 
         private void CycleTargetSorting()
         {
-            if (targetSortingType == TargetSortingType.Distance)
+            if (TargetSorting == TargetSortingType.Distance)
                 SetTargetingType(TargetSortingType.List);
             else
                 SetTargetingType(TargetSortingType.Distance);
@@ -214,10 +214,10 @@ namespace Assets.App.Scripts.Characters
                 if (_targeting)
                 {
                     // If target disconnects / disappears somehow
-                    if (currentTarget == null)
+                    if (_currentTarget == null)
                         FindTarget(true);
 
-                    _targetDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
+                    _targetDistance = Vector3.Distance(transform.position, _currentTarget.transform.position);
                 }
                 else
                 {
@@ -243,11 +243,11 @@ namespace Assets.App.Scripts.Characters
                 _reticleController.Hide();
             }
 
-            currentTarget = null;
+            _currentTarget = null;
 
-            targetSortingType = type;
+            TargetSorting = type;
 
-            sortingLabel.text = targetSortingType.ToString();
+            SortingLabel.text = TargetSorting.ToString();
         }
 
         /// <summary>
@@ -255,26 +255,26 @@ namespace Assets.App.Scripts.Characters
         /// </summary>
         private void SetTargetingTypeThroughInspector()
         {
-            SetTargetingType(targetSortingType);
+            SetTargetingType(TargetSorting);
         }    
 
         private void FindTarget(bool forward)
         {
             _targetFollowLockout = false;
             
-            if (_target.hasNewTargets)
-                validTargets = _target.GetTargets(false);
+            if (_target.HasNewTargets)
+                _validTargets = _target.GetTargets(false);
 
-            if (validTargets.Count < 1)
+            if (_validTargets.Count < 1)
             {
                 Debug.LogWarning(gameObject.name + " has no valid targets");
                 ToggleTargeting();
                 return;
             }
 
-            if (targetSortingType == TargetSortingType.List)
+            if (TargetSorting == TargetSortingType.List)
             {
-                if (_targetIndex == -1 || currentTarget == null)
+                if (_targetIndex == -1 || _currentTarget == null)
                 {
                     _targetIndex = 0;
                 }
@@ -285,19 +285,19 @@ namespace Assets.App.Scripts.Characters
                         index++;
                     else
                         index--;
-                    _targetIndex = IntExtension.WrapIndex(index, validTargets.Count);
+                    _targetIndex = IntExtension.WrapIndex(index, _validTargets.Count);
                 }
             }
-            else if (targetSortingType == TargetSortingType.Distance)
+            else if (TargetSorting == TargetSortingType.Distance)
             {
-                List<float> distances = new List<float>(validTargets.Count);
+                List<float> distances = new List<float>(_validTargets.Count);
                 Vector3 pos = transform.position; // speeds up loop
                 float currentTargetDistance = 0;
 
-                for (int i = 0; i < validTargets.Count; i++)
+                for (int i = 0; i < _validTargets.Count; i++)
                 {
                     // Can be further optimized by skipping square root
-                    float distance = Vector3.Distance(pos, validTargets[i].transform.position);
+                    float distance = Vector3.Distance(pos, _validTargets[i].transform.position);
                     distances.Add(distance);
 
                     if (i == _targetIndex)
@@ -308,7 +308,7 @@ namespace Assets.App.Scripts.Characters
                 distances.Sort();
 
                 int index;
-                if (_targetIndex == -1 || currentTarget == null)
+                if (_targetIndex == -1 || _currentTarget == null)
                 {
                     index = 0;
                 }
@@ -326,11 +326,11 @@ namespace Assets.App.Scripts.Characters
                 _targetIndex = originalDistances.IndexOf(distances[index]);
             }
 
-            if (currentTarget != null)
-                previousTarget = currentTarget.transform;
-            currentTarget = validTargets[_targetIndex];
+            if (_currentTarget != null)
+                _previousTarget = _currentTarget.transform;
+            _currentTarget = _validTargets[_targetIndex];
             _targetingCameraIndex = IntExtension.WrapIndex(_targetingCameraIndex + 1, _targetingCameras.Length);
-            _targetingCameras[_targetingCameraIndex].LookAt = currentTarget.transform;
+            _targetingCameras[_targetingCameraIndex].LookAt = _currentTarget.transform;
         }
 
         private void ChangeCamera(CinemachineVirtualCamera cam)
@@ -350,11 +350,11 @@ namespace Assets.App.Scripts.Characters
 
         private void CameraRotation()
         {
-            if (!lockCameraPosition)
+            if (!LockCameraPosition)
             {
                 if (Cursor.lockState == CursorLockMode.Locked)
                 {
-                    if (_input.look.sqrMagnitude >= LOOK_THRESHOLD)
+                    if (_input.Look.sqrMagnitude >= LOOK_THRESHOLD)
                     {
                         if (_targetFollowLockoutCoroutine != null)
                             StopCoroutine(_targetFollowLockoutCoroutine);
@@ -363,8 +363,8 @@ namespace Assets.App.Scripts.Characters
                         // Controller doesnt seem to need delta either
                         //float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                        float pitch = _cameraGoalPitch + _input.look.y;
-                        float yaw = _cameraGoalYaw + _input.look.x;
+                        float pitch = _cameraGoalPitch + _input.Look.y;
+                        float yaw = _cameraGoalYaw + _input.Look.x;
                         SetCameraRotation(pitch, yaw);
 
                         ChangeCamera(_followCamera);
@@ -374,20 +374,20 @@ namespace Assets.App.Scripts.Characters
                 if (_targeting && !_targetFollowLockout)
                 {
 
-                    if (previousTarget != null)
-                        _cameraTargetFollows[IntExtension.WrapIndex(_targetingCameraIndex + 1, TARGETING_CAMERAS)].transform.LookAt(previousTarget);
-                    _cameraTargetFollows[_targetingCameraIndex].transform.LookAt(currentTarget.transform);
+                    if (_previousTarget != null)
+                        _cameraTargetFollows[IntExtension.WrapIndex(_targetingCameraIndex + 1, TARGETING_CAMERAS)].transform.LookAt(_previousTarget);
+                    _cameraTargetFollows[_targetingCameraIndex].transform.LookAt(_currentTarget.transform);
 
                     // Smooth follow camera to target camera
-                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.x, cameraFollowingSpeed.x * Time.deltaTime);
-                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.y, cameraFollowingSpeed.y * Time.deltaTime);
+                    var pitch = Mathf.MoveTowardsAngle(_cameraGoalPitch, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.x, CameraFollowingSpeed.x * Time.deltaTime);
+                    var yaw = Mathf.MoveTowardsAngle(_cameraGoalYaw, _cameraTargetFollows[_targetingCameraIndex].transform.eulerAngles.y, CameraFollowingSpeed.y * Time.deltaTime);
                     SetCameraRotation(pitch, yaw);
 
                     ChangeCamera(_targetingCameras[_targetingCameraIndex]);
                 }
             }
 
-            cameraFollow.transform.rotation = Quaternion.Euler(_cameraGoalPitch + cameraAngleOverride, _cameraGoalYaw, 0.0f);
+            CameraFollow.transform.rotation = Quaternion.Euler(_cameraGoalPitch + CameraAngleOverride, _cameraGoalYaw, 0.0f);
         }
 
         private void SetCameraRotation(float pitch, float yaw)
@@ -398,7 +398,7 @@ namespace Assets.App.Scripts.Characters
             _cameraGoalPitch = pitch;
             _cameraGoalYaw = yaw;
 
-            _cameraGoalPitch = ClampAngle(_cameraGoalPitch, cameraClamp.Minimum, cameraClamp.Maximum);
+            _cameraGoalPitch = ClampAngle(_cameraGoalPitch, CameraClamp.Minimum, CameraClamp.Maximum);
             _cameraGoalYaw = ClampAngle(_cameraGoalYaw, float.MinValue, float.MaxValue);
         }
 

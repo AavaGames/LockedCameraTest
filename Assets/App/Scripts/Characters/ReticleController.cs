@@ -14,14 +14,14 @@ namespace Assets.App.Scripts.Characters
         private CharacterCamera _playerCameraController;
 
         [Foldout("Dependencies")]
-        public Canvas playerCanvas;
+        public Canvas PlayerCanvas;
         [Foldout("Dependencies")]
-        public Image reticle;
+        public Image Reticle;
         [Foldout("Dependencies")]
-        public TextMeshProUGUI distanceText;
+        public TextMeshProUGUI DistanceText;
 
-        public float closeRange = 5;
-        public float midRange = 10;
+        public float CloseRange = 5;
+        public float MidRange = 10;
 
         // Use this for initialization
         void Awake()
@@ -30,9 +30,9 @@ namespace Assets.App.Scripts.Characters
 
             _playerCameraController = GetComponent<CharacterCamera>();
 
-            playerCanvas.enabled = false;
-            reticle.enabled = false;
-            distanceText.enabled = false;
+            PlayerCanvas.enabled = false;
+            Reticle.enabled = false;
+            DistanceText.enabled = false;
         }
 
         private void OnDestroy()
@@ -49,7 +49,7 @@ namespace Assets.App.Scripts.Characters
 
             if (IsOwner)
             {
-                playerCanvas.enabled = true;
+                PlayerCanvas.enabled = true;
             }
         }
 
@@ -65,14 +65,14 @@ namespace Assets.App.Scripts.Characters
 
         public void Show(bool showDistance = true)
         {
-            reticle.enabled = true;
-            distanceText.enabled = showDistance;
+            Reticle.enabled = true;
+            DistanceText.enabled = showDistance;
         }
 
         public void Hide()
         {
-            reticle.enabled = false;
-            distanceText.enabled = false;
+            Reticle.enabled = false;
+            DistanceText.enabled = false;
         }
 
         private void UpdateReticle()
@@ -82,26 +82,26 @@ namespace Assets.App.Scripts.Characters
             // Can switch images because its off the screen to point in direction of target
             screenPosition.x = Mathf.Clamp(screenPosition.x, 0, Screen.width);
             screenPosition.y = Mathf.Clamp(screenPosition.y, 0, Screen.height);
-            reticle.rectTransform.position = screenPosition;
+            Reticle.rectTransform.position = screenPosition;
 
-            if (_playerCameraController.TargetDistance <= closeRange)
+            if (_playerCameraController.TargetDistance <= CloseRange)
             {
-                reticle.color = Color.red;
+                Reticle.color = Color.red;
             }
-            else if (_playerCameraController.TargetDistance <= midRange)
+            else if (_playerCameraController.TargetDistance <= MidRange)
             {
-                reticle.color = Color.yellow;
+                Reticle.color = Color.yellow;
             }
             else
             {
-                reticle.color = Color.green;
+                Reticle.color = Color.green;
             }
         }
 
         private void UpdateDistanceText()
         {
-            distanceText.text = _playerCameraController.TargetDistance.ToString("#.00");
-            distanceText.color = reticle.color;
+            DistanceText.text = _playerCameraController.TargetDistance.ToString("#.00");
+            DistanceText.color = Reticle.color;
         }
     }
 }

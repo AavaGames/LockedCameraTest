@@ -9,26 +9,26 @@ namespace Assets.App.Scripts.Characters
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerInputController : NetworkBehaviour
     {
-        public PlayerInput input { get; private set; }
+        public PlayerInput Input { get; private set; }
         
-        public InputActionAsset actions { get { return input.actions; } }
+        public InputActionAsset Actions { get { return Input.actions; } }
 
-        public Vector2 move { get; private set; }
-        public Vector2 look { get; private set; }
+        public Vector2 Move { get; private set; }
+        public Vector2 Look { get; private set; }
 
         public bool IsCurrentDeviceMouse
         {
             get
             {
-                if (input == null) return false;
-                return input.currentControlScheme == "Keyboard Mouse";
+                if (Input == null) return false;
+                return Input.currentControlScheme == "Keyboard Mouse";
             }
         }
 
         private void Awake()
         {
-            input = GetComponent<PlayerInput>();
-            input.enabled = false;
+            Input = GetComponent<PlayerInput>();
+            Input.enabled = false;
         }
 
         public override void OnStartClient()
@@ -37,27 +37,27 @@ namespace Assets.App.Scripts.Characters
 
             if (IsOwner)
             {
-                input.enabled = true;
+                Input.enabled = true;
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
-                input.actions.FindActionMap("Dev").Enable();
+                Input.actions.FindActionMap("Dev").Enable();
 #endif
             }
         }
 
         public void ActivateInput()
         {
-            input.ActivateInput();
+            Input.ActivateInput();
         }
 
         public void DeactivateInput()
         {
-            input.DeactivateInput();
+            Input.DeactivateInput();
         }
 
         public InputAction GetAction(string actionName)
         {
-            return input.actions[actionName];
+            return Input.actions[actionName];
         }
 
 
@@ -65,33 +65,33 @@ namespace Assets.App.Scripts.Characters
 
         public void OnMove(InputValue inputValue)
         {
-            move = inputValue.Get<Vector2>();
+            Move = inputValue.Get<Vector2>();
         }
 
         public void OnLook(InputValue inputValue)
         {
-            look = inputValue.Get<Vector2>();
+            Look = inputValue.Get<Vector2>();
         }
 
 
         // Examples
         public bool MovementAbilityPressed()
         {
-            return input.actions["MovementAbility"].WasPerformedThisFrame();
+            return Input.actions["MovementAbility"].WasPerformedThisFrame();
         }
 
         #endregion
 
         public virtual bool IsMoving()
         {
-            bool hasHorizontalInput = !Mathf.Approximately(move.x, 0f);
-            bool hasVerticalInput = !Mathf.Approximately(move.y, 0f);
+            bool hasHorizontalInput = !Mathf.Approximately(Move.x, 0f);
+            bool hasVerticalInput = !Mathf.Approximately(Move.y, 0f);
             return hasHorizontalInput || hasVerticalInput;
         }
 
         public bool MouseToWorldHitPoint(out RaycastHit hit, float maxCheckDistance = Mathf.Infinity)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
             return Physics.Raycast(ray, out hit, maxCheckDistance);
         }
 

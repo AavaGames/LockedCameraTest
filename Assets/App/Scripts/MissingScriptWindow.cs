@@ -8,8 +8,8 @@ using Unity.VisualScripting;
 #if UNITY_EDITOR
 public class MissingScriptWindow : EditorWindow
 {
-    private static List<string> missingAssets = new List<string>();
-    private static List<GameObject> objectsWithMissingScriptsInCurrentScene = new List<GameObject>();
+    private static List<string> _missingAssets = new List<string>();
+    private static List<GameObject> _objectsWithMissingScriptsInCurrentScene = new List<GameObject>();
 
     [MenuItem("Tools/Find missing scripts")]
     public static void ShowWindow()
@@ -32,7 +32,7 @@ public class MissingScriptWindow : EditorWindow
             FindMissingScriptsInCurrentScene();
         }
         GUILayout.Label("Results (Current Scene):", EditorStyles.boldLabel);
-        foreach (var go in objectsWithMissingScriptsInCurrentScene)
+        foreach (var go in _objectsWithMissingScriptsInCurrentScene)
         {
             if (GUILayout.Button(go.name))
             {
@@ -50,7 +50,7 @@ public class MissingScriptWindow : EditorWindow
             FindMissingScriptsInAssets();
         }
         GUILayout.Label("Results (Assets):", EditorStyles.boldLabel);
-        foreach (string path in missingAssets)
+        foreach (string path in _missingAssets)
         {
             if (GUILayout.Button(path))
             {
@@ -73,7 +73,7 @@ public class MissingScriptWindow : EditorWindow
 
     private static void FindMissingScriptsInCurrentScene()
     {
-        objectsWithMissingScriptsInCurrentScene.Clear();
+        _objectsWithMissingScriptsInCurrentScene.Clear();
         GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
         foreach (GameObject go in allObjects)
         {
@@ -90,7 +90,7 @@ public class MissingScriptWindow : EditorWindow
         bool hasMissingScript = components.Any(c => c == null);
         if (hasMissingScript)
         {
-            objectsWithMissingScriptsInCurrentScene.Add(go);
+            _objectsWithMissingScriptsInCurrentScene.Add(go);
         }
         foreach (Transform child in go.transform) // Recursively check children
         {
@@ -100,7 +100,7 @@ public class MissingScriptWindow : EditorWindow
 
     private static void FindMissingScriptsInAssets()
     {
-        missingAssets.Clear();
+        _missingAssets.Clear();
         string[] allAssets = AssetDatabase.GetAllAssetPaths();
         foreach (string assetPath in allAssets)
         {
@@ -111,7 +111,7 @@ public class MissingScriptWindow : EditorWindow
                 bool hasMissingScript = components.Any(c => c == null);
                 if (hasMissingScript)
                 {
-                    missingAssets.Add(assetPath);
+                    _missingAssets.Add(assetPath);
                 }
             }
         }
@@ -119,11 +119,11 @@ public class MissingScriptWindow : EditorWindow
 
     private void OnHierarchyChange()
     {
-        if (objectsWithMissingScriptsInCurrentScene.Count > 0 && objectsWithMissingScriptsInCurrentScene[0] == null)
-            objectsWithMissingScriptsInCurrentScene.Clear();
+        if (_objectsWithMissingScriptsInCurrentScene.Count > 0 && _objectsWithMissingScriptsInCurrentScene[0] == null)
+            _objectsWithMissingScriptsInCurrentScene.Clear();
 
-        if (missingAssets.Count > 0 && missingAssets[0] == null)
-            missingAssets.Clear();
+        if (_missingAssets.Count > 0 && _missingAssets[0] == null)
+            _missingAssets.Clear();
     }
 }
 #endif

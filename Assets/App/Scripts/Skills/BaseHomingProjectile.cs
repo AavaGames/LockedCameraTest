@@ -9,10 +9,10 @@ namespace Assets.App.Scripts.Skills
 {
     public class BaseHomingProjectile : SkillObject
     {
-        public float projectileSpeed = 5;
-        public float rotateSpeed = 2;
-        public Rigidbody projectileRB;
-        private Vector3 heading;
+        public float ProjectileSpeed = 5;
+        public float RotateSpeed = 2;
+        public Rigidbody ProjectileRB;
+        private Vector3 _heading;
 
         private void Awake()
         {
@@ -39,19 +39,19 @@ namespace Assets.App.Scripts.Skills
         private void TimeManager_OnTick()
         {
             //speed, probably needs to include global speed value from buffs
-            projectileRB.velocity = transform.forward * projectileSpeed;
+            ProjectileRB.velocity = transform.forward * ProjectileSpeed;
 
             //rotation, probably needs to include global rotation speed value
 
             // By default be shot forward
-            Vector3 target = transform.position + character.transform.forward;
-            if (character.camera.Targeting)
-                target = character.camera.CurrentTarget.transform.position;
+            Vector3 target = transform.position + Character.transform.forward;
+            if (Character.Camera.Targeting)
+                target = Character.Camera.CurrentTarget.transform.position;
 
-            heading = target - transform.position;
+            _heading = target - transform.position;
 
-            var rotating = Quaternion.LookRotation(heading);
-            projectileRB.MoveRotation(Quaternion.RotateTowards(transform.rotation, rotating, rotateSpeed * Time.deltaTime));
+            var rotating = Quaternion.LookRotation(_heading);
+            ProjectileRB.MoveRotation(Quaternion.RotateTowards(transform.rotation, rotating, RotateSpeed * Time.deltaTime));
         }
     }
 }

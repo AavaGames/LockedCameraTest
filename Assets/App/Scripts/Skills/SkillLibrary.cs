@@ -7,7 +7,7 @@ namespace Assets.App.Scripts.Skills
     [CreateAssetMenu(fileName = "SkillLibrary", menuName = "Skill System/Skill Library")]
     public class SkillLibrary : ScriptableObject
     {
-        public List<Skill> skills;
-        public bool includeTestingSkills;
+        public List<Skill> Skills;
+        public bool IncludeTestingSkills;
     }
 }

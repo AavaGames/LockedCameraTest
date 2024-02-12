@@ -6,7 +6,7 @@ namespace Assets.App.Scripts.Characters
 {
     public class CharacterStats : MonoBehaviour
     {
-        public float movement;
+        public float Movement;
     }
 
 }

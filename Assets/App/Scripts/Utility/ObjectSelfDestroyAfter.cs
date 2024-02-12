@@ -7,7 +7,7 @@ namespace Assets.App.Scripts.Utility
 {
     public class ObjectSelfDestroyAfter : NetworkBehaviour
     {
-        public float destroyAfter = 5;
+        public float DestroyAfter = 5;
 
         public override void OnStartClient()
         {
@@ -21,7 +21,7 @@ namespace Assets.App.Scripts.Utility
 
         IEnumerator DespawnAfter()
         {
-            yield return new WaitForSeconds(destroyAfter);
+            yield return new WaitForSeconds(DestroyAfter);
             Despawn();
         }
     }

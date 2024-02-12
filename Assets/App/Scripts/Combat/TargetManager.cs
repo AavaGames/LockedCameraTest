@@ -6,20 +6,8 @@ namespace Assets.App.Scripts.Combat
 {
     public class TargetManager : MonoBehaviour
     {
-        private List<Target> targets = new List<Target>();
-        private int teams = 1;
-
-        // Use this for initialization
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
+        private List<Target> _targets = new List<Target>();
+        private int _teams = 1;
 
         /// <summary>
         /// Called by targets added after scene creation
@@ -31,29 +19,29 @@ namespace Assets.App.Scripts.Combat
 
         public void RemoveTarget(Target target)
         {
-            targets.Remove(target);
+            _targets.Remove(target);
 
-            foreach (Target t in targets)
+            foreach (Target t in _targets)
             {
-                t.hasNewTargets = true;
+                t.HasNewTargets = true;
             }
         }
 
         private void AddTargetToList(Target target)
         {
-            targets.Add(target);
-            target.team = teams;
-            teams++;
+            _targets.Add(target);
+            target.Team = _teams;
+            _teams++;
 
-            foreach (Target t in targets)
+            foreach (Target t in _targets)
             {
-                t.hasNewTargets = true;
+                t.HasNewTargets = true;
             }
         }
 
         private void FindAllTargetsInScene()
         {
-            targets.Clear();
+            _targets.Clear();
             foreach (var target in FindObjectsOfType<Target>())
             {
                 AddTargetToList(target);
@@ -67,17 +55,17 @@ namespace Assets.App.Scripts.Combat
         public List<Target> GetTargets(Target caller, bool getTeammates)
         {
             List<Target> validTargets = new List<Target>();
-            for (int i = 0; i < targets.Count; i++)
+            for (int i = 0; i < _targets.Count; i++)
             {
-                var target = targets[i];
+                var target = _targets[i];
                 if (target == caller)
                     continue;
 
                 if (getTeammates)
                     validTargets.Add(target);
-                else if (target.team < 0)
+                else if (target.Team < 0)
                     validTargets.Add(target);
-                else if (target.team != caller.team)
+                else if (target.Team != caller.Team)
                     validTargets.Add(target);
             }
             return validTargets;

@@ -20,30 +20,30 @@ namespace Assets.App.Scripts.Characters
         private NetworkAnimator _networkAnimator;
         private PlayerInputController _input;
 
-        private bool canUseSkill = true;
+        private bool _canUseSkill = true;
 
         [Required]
-        public SkillLibrary skillLibrary;
+        public SkillLibrary SkillLibrary;
 
         public enum SkillDirection { North, East, South, West }
 
         private class SkillContainer
         {
-            public Skill skill;
-            public TextMeshProUGUI textMesh;
-            public bool queued;
+            public Skill Skill;
+            public TextMeshProUGUI TextMesh;
+            public bool Queued;
         }
 
-        private Dictionary<SkillDirection, SkillContainer> skills = new Dictionary<SkillDirection, SkillContainer>();
+        private Dictionary<SkillDirection, SkillContainer> _skills = new Dictionary<SkillDirection, SkillContainer>();
 
         [Foldout("Dependency")]
-        public TextMeshProUGUI skillNorthText;
+        public TextMeshProUGUI SkillNorthText;
         [Foldout("Dependency")]
-        public TextMeshProUGUI skillEastText;
+        public TextMeshProUGUI SkillEastText;
         [Foldout("Dependency")]
-        public TextMeshProUGUI skillSouthText;
+        public TextMeshProUGUI SkillSouthText;
         [Foldout("Dependency")]
-        public TextMeshProUGUI skillWestText;
+        public TextMeshProUGUI SkillWestText;
 
         void Awake()
         {
@@ -56,24 +56,24 @@ namespace Assets.App.Scripts.Characters
 
             foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
             {
-                skills.Add(direction, new SkillContainer());
+                _skills.Add(direction, new SkillContainer());
             }
 
-            skills[SkillDirection.North].textMesh = skillNorthText;
-            skills[SkillDirection.East].textMesh = skillEastText;
-            skills[SkillDirection.South].textMesh = skillSouthText;
-            skills[SkillDirection.West].textMesh = skillWestText;
+            _skills[SkillDirection.North].TextMesh = SkillNorthText;
+            _skills[SkillDirection.East].TextMesh = SkillEastText;
+            _skills[SkillDirection.South].TextMesh = SkillSouthText;
+            _skills[SkillDirection.West].TextMesh = SkillWestText;
 
-            UpdateSkill(skills[SkillDirection.North], 1);
-            UpdateSkill(skills[SkillDirection.East], 0);
-            UpdateSkill(skills[SkillDirection.South], 2);
-            UpdateSkill(skills[SkillDirection.West], 3);
+            UpdateSkill(_skills[SkillDirection.North], 1);
+            UpdateSkill(_skills[SkillDirection.East], 0);
+            UpdateSkill(_skills[SkillDirection.South], 2);
+            UpdateSkill(_skills[SkillDirection.West], 3);
         }
 
         private void UpdateSkill(SkillContainer skillContainer, int skillIndex)
         {
-            skillContainer.skill = skillLibrary.skills[skillIndex];
-            skillContainer.textMesh.text = skillContainer.skill.name;
+            skillContainer.Skill = SkillLibrary.Skills[skillIndex];
+            skillContainer.TextMesh.text = skillContainer.Skill.Name;
         }
 
         public override void OnStartClient()
@@ -108,29 +108,29 @@ namespace Assets.App.Scripts.Characters
         private void TimeManager_OnUpdate()
         {
 
-            if (_input.actions["SkillNorth"].WasPressedThisFrame())
-                skills[SkillDirection.North].queued = true;
-            if (_input.actions["SkillEast"].WasPressedThisFrame())
-                skills[SkillDirection.East].queued = true;
-            if (_input.actions["SkillSouth"].WasPressedThisFrame())
-                skills[SkillDirection.South].queued = true;
-            if (_input.actions["SkillWest"].WasPressedThisFrame())
-                skills[SkillDirection.West].queued = true;
+            if (_input.Actions["SkillNorth"].WasPressedThisFrame())
+                _skills[SkillDirection.North].Queued = true;
+            if (_input.Actions["SkillEast"].WasPressedThisFrame())
+                _skills[SkillDirection.East].Queued = true;
+            if (_input.Actions["SkillSouth"].WasPressedThisFrame())
+                _skills[SkillDirection.South].Queued = true;
+            if (_input.Actions["SkillWest"].WasPressedThisFrame())
+                _skills[SkillDirection.West].Queued = true;
         }
 
         private void TimeManager_OnTick()
         {
             foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
             {
-                SkillContainer currentSkill = skills[direction];
-                if (currentSkill.queued)
+                SkillContainer currentSkill = _skills[direction];
+                if (currentSkill.Queued)
                 {
                     // Client Attacks
-                    ExecuteAttack(currentSkill.skill);
+                    ExecuteAttack(currentSkill.Skill);
                     // Update server with animation + movement
-                    CmdExecuteAttack(currentSkill.skill);
+                    CmdExecuteAttack(currentSkill.Skill);
 
-                    currentSkill.queued = false;
+                    currentSkill.Queued = false;
                 }
             }
         }
@@ -138,19 +138,19 @@ namespace Assets.App.Scripts.Characters
         [Client]
         public void ExecuteAttack(Skill skill)
         {
-            if (canUseSkill)
+            if (_canUseSkill)
             {
-                if (!_character.movement.grounded && !skill.canUseInAir)
+                if (!_character.Movement.Grounded && !skill.CanUseInAir)
                     return;
 
                 Debug.Log("Attack Executed");
 
-                canUseSkill = false;
+                _canUseSkill = false;
 
                 // Face target
-                if (_character.camera.Targeting && _character.camera.CurrentTarget != null)
+                if (_character.Camera.Targeting && _character.Camera.CurrentTarget != null)
                 {
-                    Vector3 dir = transform.position - _character.camera.CurrentTarget.transform.position;
+                    Vector3 dir = transform.position - _character.Camera.CurrentTarget.transform.position;
                     dir = dir.normalized;
                     float rotation = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
                     transform.rotation = Quaternion.Euler(0, rotation - 180, 0);
@@ -159,10 +159,10 @@ namespace Assets.App.Scripts.Characters
                 // Crossfading causes non-owner Characters to get stuck on non-host clients
                 //_networkAnimator.CrossFade(attack.attackAnimation, 0.25f, 0);
 
-                _networkAnimator.Play(skill.animationName);
+                _networkAnimator.Play(skill.AnimationName);
 
-                _character.movement.Deactivate();
-                _character.movement.ResetVerticalVelocity();
+                _character.Movement.Deactivate();
+                _character.Movement.ResetVerticalVelocity();
             }
         }
 
@@ -174,7 +174,7 @@ namespace Assets.App.Scripts.Characters
             {
                 Debug.Log("SERVER: " + gameObject.name + " is executing attack");
 
-                if (!canUseSkill)
+                if (!_canUseSkill)
                 {
                     Debug.LogWarning("SERVER ERROR: Player Is not allowed to attack");
                     // Kick player out of animation
@@ -188,7 +188,7 @@ namespace Assets.App.Scripts.Characters
         {
             if (skillObj != null)
             {
-                skillObj.character = _character;
+                skillObj.Character = _character;
             }
         }
 
@@ -227,8 +227,8 @@ namespace Assets.App.Scripts.Characters
         // releases the character so they are allowed to attack again
         public void AnimationEnd()
         {
-            _character.movement.Activate();
-            canUseSkill = true;
+            _character.Movement.Activate();
+            _canUseSkill = true;
         }
     }
 }

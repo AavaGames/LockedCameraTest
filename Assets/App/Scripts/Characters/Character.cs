@@ -8,34 +8,34 @@ namespace Assets.App.Scripts.Characters
 {
     public class Character : NetworkBehaviour
     {
-        public PlayerInputController input { get; private set; }
-        new public CharacterCamera camera { get; private set; }
-        public CharacterMovement movement { get; private set; }
-        public CharacterSkills skills { get; private set; }
+        public PlayerInputController Input { get; private set; }
+        public CharacterCamera Camera { get; private set; }
+        public CharacterMovement Movement { get; private set; }
+        public CharacterSkills Skills { get; private set; }
 
-        public CharacterHealth health { get; private set; }
+        public CharacterHealth Health { get; private set; }
 
 
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            input = GetComponent<PlayerInputController>();
-            camera = GetComponent<CharacterCamera>();
-            movement = GetComponent<CharacterMovement>();
-            skills = GetComponent<CharacterSkills>();
-            health = GetComponent<CharacterHealth>();
+            Input = GetComponent<PlayerInputController>();
+            Camera = GetComponent<CharacterCamera>();
+            Movement = GetComponent<CharacterMovement>();
+            Skills = GetComponent<CharacterSkills>();
+            Health = GetComponent<CharacterHealth>();
         }
 
         private void Update()
         {
             if (IsOwner)
             {
-                if (input.actions["Pause"].WasPressedThisFrame())
+                if (Input.Actions["Pause"].WasPressedThisFrame())
                 {
                     Cursor.lockState = CursorLockMode.None;
                 }
-                else if (Input.GetMouseButtonDown(1))
+                else if (UnityEngine.Input.GetMouseButtonDown(1))
                 {
                     Cursor.lockState = CursorLockMode.Locked;
                 }

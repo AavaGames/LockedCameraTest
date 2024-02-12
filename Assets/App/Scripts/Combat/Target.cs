@@ -6,25 +6,25 @@ namespace Assets.App.Scripts.Combat
 {
     public class Target : MonoBehaviour
     {
-        public TargetManager targetManager;
+        public TargetManager TargetManager;
         [Tooltip("Team target is on (-1 = no team)")]
-        public int team = -1;
-        public bool hasNewTargets = true;
+        public int Team = -1;
+        public bool HasNewTargets = true;
 
         private void Start()
         {
-            targetManager = FindObjectOfType<TargetManager>();
-            targetManager.AddTarget(this);
+            TargetManager = FindObjectOfType<TargetManager>();
+            TargetManager.AddTarget(this);
         }
 
         private void OnDestroy()
         {
-            targetManager.RemoveTarget(this);
+            TargetManager.RemoveTarget(this);
         }
 
         public List<Target> GetTargets(bool getTeammates)
         {
-            return targetManager.GetTargets(this, getTeammates);
+            return TargetManager.GetTargets(this, getTeammates);
         }
     }
 }
