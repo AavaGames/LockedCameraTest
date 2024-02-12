@@ -9,13 +9,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 
 namespace Assets.App.Script.Character
 {
     public class CharacterSkills : NetworkBehaviour
     {
         private Character _character;
-        private Animator _animator;
         private NetworkAnimator _networkAnimator;
         private PlayerInputController _input;
 
@@ -24,12 +24,25 @@ namespace Assets.App.Script.Character
         [Required]
         public SkillLibrary skillLibrary;
 
-        private AttackClass skillNorth;
+        public enum SkillDirection { North, East, South, West }
+
+        private class Skill
+        {
+            public AttackClass skill;
+            public TextMeshProUGUI textMesh;
+            public bool queued;
+        }
+
+        private Dictionary<SkillDirection, Skill> skills = new Dictionary<SkillDirection, Skill>();
 
         [Foldout("Dependency")]
         public TextMeshProUGUI skillNorthText;
-
-        private Action<InputAction.CallbackContext> attackAction;
+        [Foldout("Dependency")]
+        public TextMeshProUGUI skillEastText;
+        [Foldout("Dependency")]
+        public TextMeshProUGUI skillSouthText;
+        [Foldout("Dependency")]
+        public TextMeshProUGUI skillWestText;
 
         void Awake()
         {
@@ -37,17 +50,29 @@ namespace Assets.App.Script.Character
             InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
 
             _character = GetComponent<Character>();
-            _animator = GetComponent<Animator>();
             _input = GetComponent<PlayerInputController>();
             _networkAnimator = GetComponent<NetworkAnimator>();
 
-            NextSkill();
+            foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
+            {
+                skills.Add(direction, new Skill());
+            }
+
+            skills[SkillDirection.North].textMesh = skillNorthText;
+            skills[SkillDirection.East].textMesh = skillEastText;
+            skills[SkillDirection.South].textMesh = skillSouthText;
+            skills[SkillDirection.West].textMesh = skillWestText;
+
+            UpdateSkill(skills[SkillDirection.North], 1);
+            UpdateSkill(skills[SkillDirection.East], 2);
+            UpdateSkill(skills[SkillDirection.South], 3);
+            UpdateSkill(skills[SkillDirection.West], 4);
         }
 
-        private void NextSkill()
+        private void UpdateSkill(Skill skill, int skillIndex)
         {
-            skillNorth = skillLibrary.skills[1];
-            skillNorthText.text = skillNorth.attackName;
+            skill.skill = skillLibrary.skills[skillIndex];
+            skill.textMesh.text = skill.skill.attackName;
         }
 
         public override void OnStartClient()
@@ -56,8 +81,7 @@ namespace Assets.App.Script.Character
 
             if (IsOwner)
             {
-                attackAction = ctx => ExecuteAttack();
-                _input.actions["SkillNorth"].performed += attackAction;
+                
             }
         }
 
@@ -67,7 +91,7 @@ namespace Assets.App.Script.Character
 
             if (IsOwner)
             {
-                _input.actions["SkillNorth"].performed -= attackAction;
+                
             }
         }
 
@@ -82,22 +106,42 @@ namespace Assets.App.Script.Character
 
         private void TimeManager_OnUpdate()
         {
-            // input queue
+
+            if (_input.actions["SkillNorth"].WasPressedThisFrame())
+                skills[SkillDirection.North].queued = true;
+            if (_input.actions["SkillEast"].WasPressedThisFrame())
+                skills[SkillDirection.East].queued = true;
+            if (_input.actions["SkillSouth"].WasPressedThisFrame())
+                skills[SkillDirection.South].queued = true;
+            if (_input.actions["SkillWest"].WasPressedThisFrame())
+                skills[SkillDirection.West].queued = true;
         }
 
         private void TimeManager_OnTick()
         {
-            // execute
+            foreach (SkillDirection direction in Enum.GetValues(typeof(SkillDirection)))
+            {
+                Skill currentSkill = skills[direction];
+                if (currentSkill.queued)
+                {
+                    // Client Attacks
+                    ExecuteAttack(currentSkill.skill);
+                    // Update server with animation + movement
+                    CmdExecuteAttack(currentSkill.skill);
+
+                    currentSkill.queued = false;
+                }
+            }
         }
 
         [Client]
-        public void ExecuteAttack()
+        public void ExecuteAttack(AttackClass attack)
         {
             if (canAttack)
             {
-                canAttack = false;
+                Debug.Log("Attack Executed");
 
-                Debug.Log("Executing attack local");
+                canAttack = false;
 
                 // Face target
                 if (_character.camera.Targeting && _character.camera.CurrentTarget != null)
@@ -108,37 +152,34 @@ namespace Assets.App.Script.Character
                     transform.rotation = Quaternion.Euler(0, rotation - 180, 0);
                 }
 
-                // playing the animation
-                AttackClass attack = skillNorth;
+                // Crossfading causes non-owner Characters to get stuck on non-host clients
+                //_networkAnimator.CrossFade(attack.attackAnimation, 0.25f, 0);
 
-
-                _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0);
+                _networkAnimator.Play(attack.attackAnimation);
 
                 _character.movement.Deactivate();
-
-                // Update server with animation + movement
-                RPCExecuteAttack(attack);
             }
         }
 
         [ServerRpc]
-        public void RPCExecuteAttack(AttackClass attack)
+        private void CmdExecuteAttack(AttackClass attack)
         {
-            Debug.Log(gameObject.name + " is executing attack");
-            
-            // playing the animation
-            //Debug.Log("Playing")
-            //if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == attack.attackAnimation)
-            //    return;
+            // Skip if client host
+            if (!IsOwner)
+            {
+                Debug.Log("SERVER: " + gameObject.name + " is executing attack");
 
-            // on non-host client, other players get stuck on this animation as if it was paused
-            _networkAnimator.CrossFade(attack.attackAnimation, 0.1f, 0); 
+                if (!canAttack)
+                {
+                    Debug.LogWarning("SERVER ERROR: Player Is not allowed to attack");
+                    // Kick player out of animation
+                }
 
-            // 1. SEE IF THIS IS CALLED MULTIPLE TIME
-            // 2. LOOK INTO ANIMATION BEHAVIORS FOR ONSTATEENTERED
-
-            _character.movement.Deactivate();
+                ExecuteAttack(attack);
+            }
         }
+
+        // TODO change name to SpawnSkillObject_
 
         // animation event object spawn
         public void SpawnObjectLocal(GameObject spawnedObj)
@@ -146,6 +187,14 @@ namespace Assets.App.Script.Character
             if (IsServer)
             {
                 GameObject currentObj = Instantiate(spawnedObj, transform, false);
+
+                // TODO change to SkillObject class that is held by all of them
+                var obj = currentObj.GetComponent<BaseHomingProjectile>();
+                if (obj != null)
+                {
+                    obj.character = _character;
+                }
+
                 Spawn(currentObj, LocalConnection);
                 // NOTE not totally sure if this is giving ownership to the caller or to every client
             }
@@ -156,6 +205,13 @@ namespace Assets.App.Script.Character
             if (IsServer)
             {
                 GameObject currentObj = Instantiate(spawnedObj, transform, false);
+
+                var obj = currentObj.GetComponent<BaseHomingProjectile>();
+                if (obj != null)
+                {
+                    obj.character = _character;
+                }
+
                 currentObj.transform.parent = null;
                 Spawn(currentObj, LocalConnection);
             }

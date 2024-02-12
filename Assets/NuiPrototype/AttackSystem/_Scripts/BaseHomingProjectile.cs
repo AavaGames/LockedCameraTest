@@ -1,36 +1,53 @@
+using Assets.App.Script.Character;
+using FishNet;
+using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
-public class BaseHomingProjectile : MonoBehaviour
+public class BaseHomingProjectile : NetworkBehaviour
 {
     public float projectileSpeed = 5;
     public float rotateSpeed = 2;
     public Rigidbody projectileRB;
-    public PlayerController playerController;
+    public Character character;
     private Vector3 heading;
-    void Start()
+
+    private void Awake()
     {
-        playerController = FindObjectOfType<PlayerController>();   
+        InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
+    {
+        if (InstanceFinder.TimeManager != null)
+        {
+            InstanceFinder.TimeManager.OnTick -= TimeManager_OnTick;
+        }
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        // save target here
+    }
+
+    private void TimeManager_OnTick()
     {
         //speed, probably needs to include global speed value from buffs
         projectileRB.velocity = transform.forward * projectileSpeed;
 
         //rotation, probably needs to include global rotation speed value
 
-        //find currently targeting target
-        for (int i = 0; i < playerController.targetList.Count; i++)
-        {
-            //find the one we are looking at
-            if (playerController.targetList[i].currentTarget == true)
-            {
-                heading = playerController.targetList[i].targetPoint.transform.position - transform.position;
-            }
-        }
+        // By default be shot forward
+        Vector3 target = transform.position + character.transform.forward;
+        if (character.camera.Targeting)
+            target = character.camera.CurrentTarget.transform.position;
+
+        heading = target - transform.position;
+
         var rotating = Quaternion.LookRotation(heading);
         projectileRB.MoveRotation(Quaternion.RotateTowards(transform.rotation, rotating, rotateSpeed * Time.deltaTime));
     }
